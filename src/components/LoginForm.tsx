@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
@@ -8,22 +9,52 @@ import Image from "next/image";
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const router = useRouter();
+
+  const mockLogin = async (method: string) => {
+    setIsLoading(true);
+    setError("");
+    
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    // Mock validation - allow any email/password or social login
+    if (method === "email" && (!email || !password)) {
+      setError("Please enter both email and password");
+      setIsLoading(false);
+      return;
+    }
+    
+    // Simulate successful login
+    localStorage.setItem("waddle_user", JSON.stringify({
+      id: "user_123",
+      email: email || "user@example.com",
+      name: "John Doe",
+      balance: 1250.50,
+      loginMethod: method
+    }));
+    
+    setIsLoading(false);
+    router.push("/");
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Login attempt:", { email, password });
+    mockLogin("email");
   };
 
   const handleAppleLogin = () => {
-    console.log("Apple login");
+    mockLogin("apple");
   };
 
   const handleMetamaskLogin = () => {
-    console.log("Metamask login");
+    mockLogin("metamask");
   };
 
   const handleGoogleLogin = () => {
-    console.log("Google login");
+    mockLogin("google");
   };
 
   return (
@@ -41,19 +72,21 @@ export default function LoginForm() {
 
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white via-white/90 to-transparent z-10"></div>
 
-        <Image
-          className="absolute bottom-0 left-1/2 transform -translate-x-1/2 z-20"
-          src="/logos/logo.svg"
-          alt="Login"
-          width={120}
-          height={120}
-        />
+        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 z-20 w-32 h-32 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+          <span className="text-white text-4xl font-bold">W</span>
+        </div>
       </div>
       <div className="flex-1 bg-white px-4 py-8">
         <div className="max-w-md mx-auto">
           <h1 className="text-2xl font-normal text-gray-900 text-center mb-8">
             Sign in or create an account
           </h1>
+
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4 text-sm">
+              {error}
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-4 mb-6">
             <div>
@@ -86,51 +119,57 @@ export default function LoginForm() {
             <Button
               onClick={handleAppleLogin}
               variant="black"
+              disabled={isLoading}
               leftIcon={
-                <Image
-                  src="/logos/apple.svg"
-                  alt="Apple"
-                  width={20}
-                  height={20}
-                />
+                <div className="w-5 h-5 bg-white rounded-sm flex items-center justify-center">
+                  <span className="text-black text-xs font-bold">🍎</span>
+                </div>
               }
             >
-              Continue with Apple
+              {isLoading ? "Signing in..." : "Continue with Apple"}
             </Button>
 
             <Button
               onClick={handleMetamaskLogin}
               variant="gray"
+              disabled={isLoading}
               leftIcon={
-                <Image
-                  src="/logos/metamask.svg"
-                  alt="Metamask"
-                  width={20}
-                  height={20}
-                />
+                <div className="w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center">
+                  <span className="text-white text-xs font-bold">M</span>
+                </div>
               }
             >
-              Continue with Metamask
+              {isLoading ? "Connecting..." : "Continue with Metamask"}
             </Button>
 
             <Button
               onClick={handleGoogleLogin}
               variant="gray"
+              disabled={isLoading}
               leftIcon={
-                <Image
-                  src="/logos/google.svg"
-                  alt="Google"
-                  width={20}
-                  height={20}
-                />
+                <div className="w-5 h-5 bg-gradient-to-r from-red-500 via-yellow-500 to-blue-500 rounded-full flex items-center justify-center">
+                  <span className="text-white text-xs font-bold">G</span>
+                </div>
               }
             >
-              Continue with Google
+              {isLoading ? "Signing in..." : "Continue with Google"}
             </Button>
           </div>
 
-          <Button onClick={handleSubmit} variant="blue" className="w-full">
-            Login
+          <Button 
+            onClick={handleSubmit} 
+            variant="blue" 
+            className="w-full"
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                Signing in...
+              </div>
+            ) : (
+              "Login"
+            )}
           </Button>
         </div>
       </div>
