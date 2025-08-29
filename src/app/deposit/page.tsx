@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { DepositModal } from "@/components/DepositModal";
+import { DepositModal } from "@/components/DepositForm";
 import { Button } from "@/components/ui/button";
 
 export default function DepositPage() {

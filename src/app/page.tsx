@@ -6,9 +6,6 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 
 interface User {
@@ -19,20 +16,51 @@ interface User {
   loginMethod: string;
 }
 
-interface Transaction {
+interface CryptoToken {
+  symbol: string;
+  name: string;
+  price: string;
+  change?: string;
+  icon: string;
+}
+
+interface Trade {
   id: string;
-  type: "deposit" | "withdrawal" | "transfer";
-  amount: number;
-  description: string;
-  date: string;
-  status: "completed" | "pending" | "failed";
+  username: string;
+  avatar: string;
+  token: string;
+  type: "LONG" | "SHORT";
+  leverage: string;
+  profit: string;
+  timeAgo: string;
 }
 
 export default function Home() {
   const [user, setUser] = useState<User | null>(null);
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+
+  // Mock data for trending tokens
+  const trendingTokens: CryptoToken[] = [
+    { symbol: "DOGE", name: "Dogecoin", price: "$2.56B", icon: "🐕", change: "+5.2%" },
+    { symbol: "SHIB", name: "Shiba Inu", price: "$7.4B", icon: "🐺", change: "+2.1%" },
+    { symbol: "PEPE", name: "Pepe", price: "$4.26B", icon: "🐸", change: "+8.5%" },
+    { symbol: "PENGU", name: "Pudgy Penguins", price: "$1.96B", icon: "🐧", change: "-1.2%" },
+  ];
+
+  // Mock data for top trades
+  const topTrades: Trade[] = [
+    {
+      id: "1",
+      username: "@cryptowhale",
+      avatar: "🐋",
+      token: "$SOL",
+      type: "LONG",
+      leverage: "10x",
+      profit: "+$4,300",
+      timeAgo: "3min ago"
+    }
+  ];
 
   useEffect(() => {
     // Check if user is logged in
@@ -44,71 +72,12 @@ export default function Home() {
 
     const parsedUser = JSON.parse(userData);
     setUser(parsedUser);
-
-    // Mock transaction data
-    const mockTransactions: Transaction[] = [
-      {
-        id: "tx_1",
-        type: "deposit",
-        amount: 500.00,
-        description: "Credit Card Deposit",
-        date: new Date(Date.now() - 86400000).toISOString(), // 1 day ago
-        status: "completed"
-      },
-      {
-        id: "tx_2",
-        type: "withdrawal",
-        amount: -150.25,
-        description: "ATM Withdrawal",
-        date: new Date(Date.now() - 172800000).toISOString(), // 2 days ago
-        status: "completed"
-      },
-      {
-        id: "tx_3",
-        type: "transfer",
-        amount: -75.00,
-        description: "Transfer to John Smith",
-        date: new Date(Date.now() - 259200000).toISOString(), // 3 days ago
-        status: "completed"
-      },
-      {
-        id: "tx_4",
-        type: "deposit",
-        amount: 1000.00,
-        description: "USDT Deposit",
-        date: new Date(Date.now() - 432000000).toISOString(), // 5 days ago
-        status: "completed"
-      }
-    ];
-
-    setTransactions(mockTransactions);
     setIsLoading(false);
   }, [router]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("waddle_user");
-    router.push("/login");
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(Math.abs(amount));
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
-
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
@@ -117,137 +86,109 @@ export default function Home() {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white pb-20">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-              <span className="text-white text-lg font-bold">W</span>
-            </div>
-            <div>
-              <h1 className="text-xl font-semibold text-gray-900">Waddle</h1>
-              <p className="text-sm text-gray-500">Welcome back, {user.name}</p>
-            </div>
+      <div className="flex items-center justify-between px-6 py-4 pt-12">
+        <div className="relative">
+          <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
+            <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707" />
+            </svg>
           </div>
-          <Button onClick={handleLogout} variant="gray" size="sm">
-            Logout
-          </Button>
+          <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
+            <span className="text-xs text-white font-medium">3</span>
+          </div>
+        </div>
+        
+        <h1 className="text-xl font-semibold text-gray-900">Explore</h1>
+        
+        <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
+          <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8">
-        {/* Balance Card */}
-        <Card className="mb-8 bg-gradient-to-r from-blue-500 to-purple-600 text-white border-0">
-          <CardHeader>
-            <CardTitle className="text-white/90">Total Balance</CardTitle>
-            <CardDescription className="text-white/70">
-              Available funds in your account
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="text-4xl font-bold mb-4">
-              {formatCurrency(user.balance)}
-            </div>
-            <div className="flex gap-3">
-              <Button 
-                onClick={() => router.push("/deposit")}
-                className="bg-white/20 hover:bg-white/30 text-white border-white/30"
-                size="sm"
-              >
-                Deposit
-              </Button>
-              <Button 
-                className="bg-white/20 hover:bg-white/30 text-white border-white/30"
-                size="sm"
-              >
-                Withdraw
-              </Button>
-              <Button 
-                className="bg-white/20 hover:bg-white/30 text-white border-white/30"
-                size="sm"
-              >
-                Transfer
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">This Month</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-green-600">+$1,500.00</div>
-              <p className="text-xs text-gray-500 mt-1">↗ 12% from last month</p>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">Transactions</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-gray-900">{transactions.length}</div>
-              <p className="text-xs text-gray-500 mt-1">This week</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">Account Type</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-purple-600">Premium</div>
-              <p className="text-xs text-gray-500 mt-1">Since {user.loginMethod}</p>
-            </CardContent>
-          </Card>
+      <div className="px-6 space-y-8">
+        {/* Total Balance Section */}
+        <div className="space-y-2">
+          <p className="text-gray-500 text-base">Total balance</p>
+          <div className="flex items-center justify-between">
+            <span className="text-4xl font-bold text-gray-900">$102.35</span>
+            <Button
+              onClick={() => router.push("/deposit")}
+              className="w-12 h-12 rounded-full bg-gray-100 hover:bg-gray-200 border-0 shadow-none"
+            >
+              <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+            </Button>
+          </div>
         </div>
 
-        {/* Recent Transactions */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Transactions</CardTitle>
-            <CardDescription>
-              Your latest account activity
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {transactions.map((transaction) => (
-                <div key={transaction.id} className="flex items-center justify-between p-4 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors">
-                  <div className="flex items-center gap-4">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                      transaction.type === 'deposit' 
-                        ? 'bg-green-100 text-green-600'
-                        : transaction.type === 'withdrawal'
-                        ? 'bg-red-100 text-red-600'
-                        : 'bg-blue-100 text-blue-600'
-                    }`}>
-                      {transaction.type === 'deposit' && '↓'}
-                      {transaction.type === 'withdrawal' && '↑'}
-                      {transaction.type === 'transfer' && '→'}
-                    </div>
+        {/* Trending Section */}
+        <div className="space-y-4">
+          <h2 className="text-xl font-semibold text-gray-900">Trending</h2>
+          <div className="flex space-x-4 overflow-x-auto pb-2">
+            {trendingTokens.map((token) => (
+              <div key={token.symbol} className="flex-shrink-0 w-20 text-center">
+                <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-2xl mb-2 mx-auto">
+                  {token.icon}
+                </div>
+                <p className="text-sm font-medium text-gray-900">{token.symbol}</p>
+                <p className="text-xs text-gray-500 mt-1">{token.price}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Top Trades Section */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-semibold text-gray-900">Top trades</h2>
+            <Button variant="outline" size="sm" className="text-blue-500 border-blue-500">
+              View all →
+            </Button>
+          </div>
+          
+          {topTrades.map((trade) => (
+            <Card key={trade.id} className="border-0 shadow-sm bg-gray-50">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-3">
+                    <div className="text-2xl">{trade.avatar}</div>
                     <div>
-                      <p className="font-medium text-gray-900">{transaction.description}</p>
-                      <p className="text-sm text-gray-500">{formatDate(transaction.date)}</p>
+                      <p className="font-medium text-gray-900">{trade.username}</p>
+                      <p className="text-sm text-gray-500">{trade.timeAgo}</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className={`font-semibold ${
-                      transaction.amount > 0 ? 'text-green-600' : 'text-red-600'
-                    }`}>
-                      {transaction.amount > 0 ? '+' : ''}{formatCurrency(transaction.amount)}
-                    </p>
-                    <p className="text-xs text-gray-500 capitalize">{transaction.status}</p>
+                    <p className="text-lg font-semibold text-green-500">{trade.profit}</p>
                   </div>
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+                
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-sm font-medium text-gray-900">{trade.token}</span>
+                    <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">
+                      ↗ {trade.type}
+                    </span>
+                    <span className="text-sm text-gray-600">{trade.leverage}</span>
+                  </div>
+                  <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+                    <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14m-7-7l7 7-7 7" />
+                    </svg>
+                  </div>
+                </div>
+                
+                <Button className="w-full mt-4 bg-blue-500 hover:bg-blue-600 text-white rounded-full">
+                  View trade
+                </Button>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
     </div>
   );
