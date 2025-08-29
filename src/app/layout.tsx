@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { aeonik } from "../lib/fonts";
+import { ToastProvider } from "@/components/ui/toast";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -45,9 +46,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${aeonik.variable}`}>
       <body className="min-h-screen bg-background antialiased font-aeonik">
-        <div className="relative flex min-h-screen flex-col">
-          <main className="flex-1">{children}</main>
-        </div>
+        <ToastProvider>
+          <div className="relative flex min-h-screen flex-col">
+            <main className="flex-1">{children}</main>
+          </div>
+        </ToastProvider>
       </body>
     </html>
   );

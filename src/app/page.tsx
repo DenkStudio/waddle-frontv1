@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/toast";
 import {
   Card,
   CardContent,
@@ -33,6 +34,7 @@ export default function Home() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+  const { addToast } = useToast();
 
   useEffect(() => {
     // Check if user is logged in
@@ -50,10 +52,10 @@ export default function Home() {
       {
         id: "tx_1",
         type: "deposit",
-        amount: 500.00,
+        amount: 500.0,
         description: "Credit Card Deposit",
         date: new Date(Date.now() - 86400000).toISOString(), // 1 day ago
-        status: "completed"
+        status: "completed",
       },
       {
         id: "tx_2",
@@ -61,24 +63,24 @@ export default function Home() {
         amount: -150.25,
         description: "ATM Withdrawal",
         date: new Date(Date.now() - 172800000).toISOString(), // 2 days ago
-        status: "completed"
+        status: "completed",
       },
       {
         id: "tx_3",
         type: "transfer",
-        amount: -75.00,
+        amount: -75.0,
         description: "Transfer to John Smith",
         date: new Date(Date.now() - 259200000).toISOString(), // 3 days ago
-        status: "completed"
+        status: "completed",
       },
       {
         id: "tx_4",
         type: "deposit",
-        amount: 1000.00,
+        amount: 1000.0,
         description: "USDT Deposit",
         date: new Date(Date.now() - 432000000).toISOString(), // 5 days ago
-        status: "completed"
-      }
+        status: "completed",
+      },
     ];
 
     setTransactions(mockTransactions);
@@ -87,22 +89,43 @@ export default function Home() {
 
   const handleLogout = () => {
     localStorage.removeItem("waddle_user");
+    addToast({
+      type: "info",
+      message: "Successfully logged out. See you soon!",
+      duration: 3000,
+    });
     router.push("/login");
   };
 
+  const handleWithdraw = () => {
+    addToast({
+      type: "info",
+      message: "Withdraw feature coming soon! Stay tuned.",
+      duration: 4000,
+    });
+  };
+
+  const handleTransfer = () => {
+    addToast({
+      type: "info",
+      message: "Transfer feature coming soon! Stay tuned.",
+      duration: 4000,
+    });
+  };
+
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
     }).format(Math.abs(amount));
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    return new Date(dateString).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
@@ -150,20 +173,22 @@ export default function Home() {
               {formatCurrency(user.balance)}
             </div>
             <div className="flex gap-3">
-              <Button 
+              <Button
                 onClick={() => router.push("/deposit")}
                 className="bg-white/20 hover:bg-white/30 text-white border-white/30"
                 size="sm"
               >
                 Deposit
               </Button>
-              <Button 
+              <Button
+                onClick={handleWithdraw}
                 className="bg-white/20 hover:bg-white/30 text-white border-white/30"
                 size="sm"
               >
                 Withdraw
               </Button>
-              <Button 
+              <Button
+                onClick={handleTransfer}
                 className="bg-white/20 hover:bg-white/30 text-white border-white/30"
                 size="sm"
               >
@@ -177,31 +202,45 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">This Month</CardTitle>
+              <CardTitle className="text-sm font-medium text-gray-600">
+                This Month
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-green-600">+$1,500.00</div>
-              <p className="text-xs text-gray-500 mt-1">↗ 12% from last month</p>
+              <div className="text-2xl font-bold text-green-600">
+                +$1,500.00
+              </div>
+              <p className="text-xs text-gray-500 mt-1">
+                ↗ 12% from last month
+              </p>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">Transactions</CardTitle>
+              <CardTitle className="text-sm font-medium text-gray-600">
+                Transactions
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-gray-900">{transactions.length}</div>
+              <div className="text-2xl font-bold text-gray-900">
+                {transactions.length}
+              </div>
               <p className="text-xs text-gray-500 mt-1">This week</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">Account Type</CardTitle>
+              <CardTitle className="text-sm font-medium text-gray-600">
+                Account Type
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-purple-600">Premium</div>
-              <p className="text-xs text-gray-500 mt-1">Since {user.loginMethod}</p>
+              <p className="text-xs text-gray-500 mt-1">
+                Since {user.loginMethod}
+              </p>
             </CardContent>
           </Card>
         </div>
@@ -210,38 +249,52 @@ export default function Home() {
         <Card>
           <CardHeader>
             <CardTitle>Recent Transactions</CardTitle>
-            <CardDescription>
-              Your latest account activity
-            </CardDescription>
+            <CardDescription>Your latest account activity</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {transactions.map((transaction) => (
-                <div key={transaction.id} className="flex items-center justify-between p-4 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors">
+                <div
+                  key={transaction.id}
+                  className="flex items-center justify-between p-4 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors"
+                >
                   <div className="flex items-center gap-4">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                      transaction.type === 'deposit' 
-                        ? 'bg-green-100 text-green-600'
-                        : transaction.type === 'withdrawal'
-                        ? 'bg-red-100 text-red-600'
-                        : 'bg-blue-100 text-blue-600'
-                    }`}>
-                      {transaction.type === 'deposit' && '↓'}
-                      {transaction.type === 'withdrawal' && '↑'}
-                      {transaction.type === 'transfer' && '→'}
+                    <div
+                      className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                        transaction.type === "deposit"
+                          ? "bg-green-100 text-green-600"
+                          : transaction.type === "withdrawal"
+                          ? "bg-red-100 text-red-600"
+                          : "bg-blue-100 text-blue-600"
+                      }`}
+                    >
+                      {transaction.type === "deposit" && "↓"}
+                      {transaction.type === "withdrawal" && "↑"}
+                      {transaction.type === "transfer" && "→"}
                     </div>
                     <div>
-                      <p className="font-medium text-gray-900">{transaction.description}</p>
-                      <p className="text-sm text-gray-500">{formatDate(transaction.date)}</p>
+                      <p className="font-medium text-gray-900">
+                        {transaction.description}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        {formatDate(transaction.date)}
+                      </p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className={`font-semibold ${
-                      transaction.amount > 0 ? 'text-green-600' : 'text-red-600'
-                    }`}>
-                      {transaction.amount > 0 ? '+' : ''}{formatCurrency(transaction.amount)}
+                    <p
+                      className={`font-semibold ${
+                        transaction.amount > 0
+                          ? "text-green-600"
+                          : "text-red-600"
+                      }`}
+                    >
+                      {transaction.amount > 0 ? "+" : ""}
+                      {formatCurrency(transaction.amount)}
                     </p>
-                    <p className="text-xs text-gray-500 capitalize">{transaction.status}</p>
+                    <p className="text-xs text-gray-500 capitalize">
+                      {transaction.status}
+                    </p>
                   </div>
                 </div>
               ))}
