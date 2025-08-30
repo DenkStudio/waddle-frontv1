@@ -8,6 +8,7 @@ import { SearchIcon } from "@/components/icons/SearchIcon";
 import { Trade } from "@/types";
 import TradeCard from "./ui/TradeCard";
 import { topTrades } from "@/lib/constants";
+import Image from "next/image";
 
 export default function Vaults() {
   const [isLoading] = useState(false);
@@ -79,6 +80,27 @@ export default function Vaults() {
         {topTrades.map((trade) => (
           <TradeCard key={trade.id} trade={trade} />
         ))}
+      </div>
+
+      {/* Floating Action Buttons */}
+      <div className="fixed bottom-32 left-4 right-4 flex items-center gap-4 z-50">
+        {/* Large Green Invest Button */}
+        <button className="flex-1 bg-green-500 text-white font-semibold py-4 px-6 rounded-full text-lg shadow-lg hover:bg-green-600 transition-colors">
+          Invest
+        </button>
+
+        {/* Circular Black Chat Icon with Notification Badge */}
+        <div className="relative">
+          <button className="w-16 h-16 bg-black rounded-full flex items-center justify-center shadow-lg hover:bg-gray-800 transition-colors">
+            {/* Chat Icon */}
+            <Image src="/logos/chat.svg" alt="chat" width={24} height={24} />
+          </button>
+
+          {/* Notification Badge */}
+          <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+            <span className="text-white text-xs font-bold">10</span>
+          </div>
+        </div>
       </div>
     </div>
   );
