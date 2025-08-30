@@ -2,17 +2,15 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import { Header } from "@/components/Header";
 import { ProfileAvatar } from "@/components/icons/ProfileAvatar";
 import { SearchIcon } from "@/components/icons/SearchIcon";
 import { Trade } from "@/types";
 import { trendingVaults } from "@/lib/constants";
-import Image from "next/image";
-import InsidersClubCard from "@/components/InsidersClubCard";
+
 import { TotalBalance } from "@/components/ui/totalBalance";
 
-export default function Home() {
+export default function Vaults() {
   const [isLoading] = useState(false);
   const router = useRouter();
 
@@ -29,19 +27,6 @@ export default function Home() {
       timeAgo: "3min ago",
     },
   ];
-
-  // useEffect(() => {
-  //   // Check if user is logged in
-  //   const userData = localStorage.getItem("waddle_user");
-  //   if (!userData) {
-  //     router.push("/login");
-  //     return;
-  //   }
-
-  //   const parsedUser = JSON.parse(userData);
-  //   setUser(parsedUser);
-  //   setIsLoading(false);
-  // }, [router]);
 
   if (isLoading) {
     return (
@@ -63,7 +48,11 @@ export default function Home() {
         className="pt-12 pb-6"
       />
 
-      <TotalBalance topTrades={topTrades} trendingVaults={trendingVaults} />
+      <TotalBalance
+        showTrendingVaults={false}
+        topTrades={topTrades}
+        trendingVaults={trendingVaults}
+      />
     </div>
   );
 }
