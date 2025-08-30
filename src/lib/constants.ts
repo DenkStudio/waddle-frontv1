@@ -63,6 +63,18 @@ export const trendingVaults: CryptoToken[] = [
     src: "/images/vault3.png",
     vaultAddress: "0xe9b89e63ac37d080a988e7464ee0e362870a022e",
   },
+  {
+    apr: "99%",
+    name: "Nico's pool",
+    src: "/images/vault4.png",
+    vaultAddress: "0x9b5a8e4a326418916dbe0c345ced0dbbda66a3e1",
+  },
+  {
+    apr: "44%",
+    name: "Mitico",
+    src: "/images/vault5.png",
+    vaultAddress: "0xe9b89e63ac37d080a988e7464ee0e362870a022e",
+  },
 ];
 
 export const topTrades: Trade[] = [
