@@ -155,12 +155,20 @@ export default function VaultCard({
 
           <svg
             className="w-5 h-5 text-white"
+            width="16"
+            height="18"
+            viewBox="0 0 16 18"
             fill="none"
-            stroke="currentColor"
-            strokeWidth={2}
-            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
           >
-            <path d="M7 4h10a2 2 0 012 2v13l-7-3-7 3V6a2 2 0 012-2z" />
+            <path
+              d="M7.45455 12.9881L2.45455 16.8066C1.90909 17.2506 1 16.8954 1 16.0962V4.55204C1 2.59842 2.63636 1 4.63636 1H11.3636C13.3636 1 15 2.59842 15 4.55204V16.0962C15 16.8066 14.0909 17.2506 13.5455 16.8066L8.54546 12.9881C8.27273 12.8105 7.81818 12.8105 7.45455 12.9881Z"
+              stroke="white"
+              stroke-opacity="0.7"
+              stroke-width="2"
+              stroke-miterlimit="10"
+              stroke-linejoin="round"
+            />
           </svg>
         </div>
 
