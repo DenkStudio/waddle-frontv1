@@ -8,21 +8,21 @@ interface HeaderProps {
   centerComponent?: React.ReactNode;
   rightComponent?: React.ReactNode;
   className?: string;
-  fixed?: boolean;
+  sticky?: boolean;
 }
 
 export function Header({
   leftComponent,
   centerComponent,
   rightComponent,
-  fixed = false,
+  sticky = true,
   className,
 }: HeaderProps) {
   return (
     <div
       className={cn(
-        "flex items-center justify-between px-4",
-        fixed ? "fixed top-0 left-0 right-0 z-50" : "",
+        "flex items-center justify-between px-4 bg-white",
+        sticky ? "sticky top-0 z-50" : "",
         className
       )}
     >

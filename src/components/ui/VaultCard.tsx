@@ -96,7 +96,7 @@ export default function VaultCard({
             <Button
               variant="gradient-blue"
               onClick={handleViewVault}
-              className="flex-1 h-12 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold"
+              className="flex-1 h-12 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold"
             >
               View vault
             </Button>
@@ -181,7 +181,7 @@ export default function VaultCard({
         {/* Action buttons section */}
         <div className="flex items-center">
           <div className="relative flex-1 mr-3">
-            <span className="pointer-events-none absolute -inset-x-6 -inset-y-2 rounded-[28px] bg-[radial-gradient(60%_120%_at_50%_100%,rgba(59,130,246,.55),transparent)] blur-2xl opacity-80" />
+            <span className="pointer-events-none rounded-full absolute -inset-x-6 -inset-y-2 rounded-[28px] bg-[radial-gradient(60%_120%_at_50%_100%,rgba(59,130,246,.55),transparent)] blur-2xl opacity-80" />
             <Button
               variant="gradient-blue"
               onClick={handleViewVault}

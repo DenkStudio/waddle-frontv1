@@ -52,9 +52,20 @@ export function BottomNavigation({ isDark = false }: BottomNavigationProps) {
   };
 
   return (
-    <div className="w-full backdrop-blur-md fixed bottom-0 left-0 right-0 z-50 pb-4 ">
+    <div className="w-full fixed bottom-0 left-0 right-0 z-50 pb-4">
+      {/* Progressive blur background - behind the navigation */}
+      <div 
+        className="absolute inset-0 pointer-events-none -z-10"
+        style={{
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          maskImage: 'linear-gradient(to bottom, transparent 0%, black 50%, black 100%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 50%, black 100%)'
+        }}
+      />
       <div
         className={cn(
+          "relative z-10",
           isDark
             ? "bg-gray-900/95 border-gray-700"
             : "bg-gray-50 border-gray-200 w-fit mx-auto rounded-full"

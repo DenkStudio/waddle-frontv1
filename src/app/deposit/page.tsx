@@ -38,7 +38,7 @@ export default function DepositPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+    <div className="h-full bg-gray-50 flex items-center justify-center p-4 overflow-hidden">
       <div className="w-full max-w-md">
         {/* Wallet Info Section */}
         {user?.wallet && (
