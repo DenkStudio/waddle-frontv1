@@ -303,7 +303,7 @@ export function TotalBalance({
                     className="w-8 h-8 object-cover rounded-full absolute top-0 -right-4 z-10"
                   />
                 </div>
-                <p className="text-sm font-medium text-gray-900">
+                <p className="text-sm font-medium text-gray-900 line-clamp-1">
                   {vault.name}
                 </p>
                 <p className="text-xs text-gray-500 mt-1 bg-gray-100 rounded-full px-2 py-1">
