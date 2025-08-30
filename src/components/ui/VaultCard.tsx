@@ -26,7 +26,7 @@ export default function VaultCard({
   yield: yieldValue = "+12.5%",
   timeAgo = "91 days ago",
   earnings = "+$108.9",
-  invested = "4203.48",
+  invested = "$4203.48",
   since = "3mo ago",
   variant = "dark",
   onViewVault,
