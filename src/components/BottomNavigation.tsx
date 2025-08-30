@@ -26,18 +26,24 @@ export function BottomNavigation({ isDark = false }: BottomNavigationProps) {
     {
       id: "menu",
       path: "/",
-      icon: (isActive, isDark) => <CustomMenuIcon isActive={isActive} isDark={isDark} />,
+      icon: (isActive, isDark) => (
+        <CustomMenuIcon isActive={isActive} isDark={isDark} />
+      ),
     },
     {
       id: "shorts",
-      path: "/shorts",
+      path: "/feed",
       isCenter: true,
-      icon: (isActive, isDark) => <CustomShortsIcon isActive={isActive} isDark={isDark} />,
+      icon: (isActive, isDark) => (
+        <CustomShortsIcon isActive={isActive} isDark={isDark} />
+      ),
     },
     {
       id: "share",
-      path: "/share",
-      icon: (isActive, isDark) => <CustomShareIcon isActive={isActive} isDark={isDark} />,
+      path: "/holdings",
+      icon: (isActive, isDark) => (
+        <CustomShareIcon isActive={isActive} isDark={isDark} />
+      ),
     },
   ];
 
@@ -46,18 +52,18 @@ export function BottomNavigation({ isDark = false }: BottomNavigationProps) {
   };
 
   return (
-    <div 
+    <div
       className={cn(
         "pb-5 fixed bottom-0 left-0 right-0 z-50 backdrop-blur-md",
-        isDark 
-          ? "bg-gray-900/95 border-gray-700" 
+        isDark
+          ? "bg-gray-900/95 border-gray-700"
           : "bg-white/95 border-gray-200"
       )}
     >
       <div className="flex items-center justify-center gap-8 px-8 py-4 max-w-md mx-auto">
         {navItems.map((item) => {
           const isActive = pathname === item.path;
-          
+
           if (item.isCenter) {
             return (
               <div
@@ -67,23 +73,23 @@ export function BottomNavigation({ isDark = false }: BottomNavigationProps) {
                   "w-16 h-16 rounded-full flex items-center justify-center transition-all duration-200",
                   "cursor-pointer select-none active:scale-90 active:duration-75",
                   "outline-none border-none",
-                  isActive 
-                    ? "bg-blue-500" 
-                    : (isDark 
-                        ? "bg-gray-800" 
-                        : "bg-gray-100")
+                  isActive
+                    ? "bg-blue-500"
+                    : isDark
+                    ? "bg-gray-800"
+                    : "bg-gray-100"
                 )}
-                style={{ 
-                  WebkitTapHighlightColor: 'transparent',
-                  outline: 'none',
-                  border: 'none'
+                style={{
+                  WebkitTapHighlightColor: "transparent",
+                  outline: "none",
+                  border: "none",
                 }}
               >
                 {item.icon(isActive, isDark)}
               </div>
             );
           }
-          
+
           // Small icons - 48x48
           return (
             <div
@@ -93,14 +99,12 @@ export function BottomNavigation({ isDark = false }: BottomNavigationProps) {
                 "w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200",
                 "cursor-pointer select-none active:scale-90 active:duration-75",
                 "outline-none border-none",
-                isDark 
-                  ? "bg-gray-800" 
-                  : "bg-gray-100"
+                isDark ? "bg-gray-800" : "bg-gray-100"
               )}
-              style={{ 
-                WebkitTapHighlightColor: 'transparent',
-                outline: 'none',
-                border: 'none'
+              style={{
+                WebkitTapHighlightColor: "transparent",
+                outline: "none",
+                border: "none",
               }}
             >
               {item.icon(isActive, isDark)}
