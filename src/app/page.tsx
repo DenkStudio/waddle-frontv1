@@ -1,47 +1,49 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import { Header } from "@/components/Header";
 import { ProfileAvatar } from "@/components/icons/ProfileAvatar";
 import { SearchIcon } from "@/components/icons/SearchIcon";
-import { Trade } from "@/types";
 import { trendingVaults } from "@/lib/constants";
-import Image from "next/image";
 import { TotalBalance } from "@/components/ui/totalBalance";
+import { usePrivy, useWallets } from "@privy-io/react-auth";
 
 export default function Home() {
+  const { ready, authenticated, user } = usePrivy();
+  const { wallets } = useWallets();
   const [isLoading] = useState(false);
   const router = useRouter();
 
-  // Mock data for top trades
-  const topTrades: Trade[] = [
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (ready && !authenticated) {
+      router.push("/login");
+    }
+  }, [ready, authenticated, router]);
+
+  // Mock data for top trades (fixed to match TopTrade interface)
+  const topTrades = [
     {
       id: "1",
+      title: "SOL Long Position",
       username: "@cryptowhale",
-      avatar: "🐋",
-      token: "$SOL",
-      type: "LONG",
-      leverage: "10x",
-      profit: "+$4,300",
-      timeAgo: "3min ago",
+      earnings: "+$4,300",
+      invested: "$1,200",
+      since: "3min ago",
     },
   ];
 
-  // useEffect(() => {
-  //   // Check if user is logged in
-  //   const userData = localStorage.getItem("waddle_user");
-  //   if (!userData) {
-  //     router.push("/login");
-  //     return;
-  //   }
+  // Show loading while Privy is initializing
+  if (!ready) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
-  //   const parsedUser = JSON.parse(userData);
-  //   setUser(parsedUser);
-  //   setIsLoading(false);
-  // }, [router]);
-
+  // Show loading while checking authentication
   if (isLoading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
