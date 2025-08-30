@@ -20,9 +20,8 @@ export default function FeedPage() {
   };
 
   return (
-    <div className="w-full h-screen bg-black">
+    <div className="w-full h-full bg-black overflow-hidden">
       <Header
-        fixed
         leftComponent={
           <Image
             src="/images/profile.png"

@@ -7,7 +7,8 @@ import VaultCard from "./VaultCard";
 import { usePrivy } from "@privy-io/react-auth";
 import { useToast } from "./toast";
 import { Deposit } from "../DepositForm";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { PublicClient, HttpTransport } from "@nktkas/hyperliquid";
 
 interface TrendingVault {
   name: string;
@@ -15,7 +16,7 @@ interface TrendingVault {
   apr: string;
 }
 
-interface TopTrade {
+export interface TopTrade {
   id: string;
   title: string;
   username: string;
@@ -32,7 +33,7 @@ interface TotalBalanceProps {
 }
 
 export function TotalBalance({
-  balance = "102.35",
+  balance,
   showTrendingVaults = true,
   trendingVaults = [],
   topTrades = [],
@@ -41,6 +42,53 @@ export function TotalBalance({
   const { user } = usePrivy();
   const { addToast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
+
+  const [usdcBalance, setUsdcBalance] = useState<string>("...");
+  const [balanceLoading, setBalanceLoading] = useState<boolean>(false);
+  const [balanceError, setBalanceError] = useState<string | null>(null);
+
+  const fetchUsdcBalance = async (walletAddress: string) => {
+    setBalanceLoading(true);
+    setBalanceError(null);
+
+    try {
+      const transport = new HttpTransport({
+        url: "https://api.hyperliquid-testnet.xyz/info", // Using testnet
+      });
+      const client = new PublicClient({ transport });
+
+      // Fetch clearinghouse state to get account balances
+      const clearinghouseState = await client.clearinghouseState({
+        user: walletAddress as `0x${string}`,
+      });
+
+      if (clearinghouseState && clearinghouseState.marginSummary) {
+        // The accountValue represents the total account value in USDC
+        const accountValue = parseFloat(
+          clearinghouseState.marginSummary.accountValue
+        );
+        setUsdcBalance(accountValue.toFixed(2));
+      } else {
+        setUsdcBalance("...");
+      }
+    } catch (error) {
+      console.error("Error fetching USDC balance:", error);
+      setBalanceError("Failed to fetch balance");
+      setUsdcBalance("...");
+    } finally {
+      setBalanceLoading(false);
+    }
+  };
+
+  // Fetch balance when user wallet is available
+  useEffect(() => {
+    if (user?.wallet?.address) {
+      fetchUsdcBalance(user.wallet.address);
+    } else {
+      setUsdcBalance("...");
+      setBalanceError(null);
+    }
+  }, [user?.wallet?.address]);
 
   const handleCopyAddress = () => {
     if (user?.wallet?.address) {
@@ -61,6 +109,9 @@ export function TotalBalance({
     setIsOpen(false);
   };
 
+  // Use fetched balance if available, otherwise fall back to prop or default
+  const displayBalance = balance || usdcBalance;
+
   return (
     <div className="px-6 space-y-6">
       <div className="space-y-1">
@@ -68,7 +119,14 @@ export function TotalBalance({
         <div className="flex items-center justify-between">
           <div className="flex items-baseline">
             <span className="text-2xl font-bold text-gray-900">$</span>
-            <span className="text-4xl font-bold text-gray-900">{balance}</span>
+            <span className="text-4xl font-bold text-gray-900">
+              {balanceLoading ? "..." : displayBalance}
+            </span>
+            {balanceError && (
+              <span className="text-sm text-red-500 ml-2">
+                Error loading balance
+              </span>
+            )}
           </div>
           <button
             onClick={handleOpenDeposit}
@@ -132,7 +190,9 @@ export function TotalBalance({
       {/* Trending Section - Conditionally Rendered */}
       {showTrendingVaults && trendingVaults.length > 0 && (
         <div className="space-y-5">
-          <h2 className="text-xl font-semibold text-gray-900">Holdings</h2>
+          <h2 className="text-xl font-semibold text-gray-900">
+            Trending vaults
+          </h2>
 
           <div className="flex space-x-6 overflow-x-auto pb-2 scrollbar-hide">
             {trendingVaults.map((vault) => (
@@ -173,19 +233,21 @@ export function TotalBalance({
           </Button>
         </div>
 
-        {topTrades.map((trade) => (
-          <VaultCard
-            key={trade.id}
-            variant="light"
-            title={trade.title}
-            username={trade.username}
-            earnings={trade.earnings}
-            invested={trade.invested}
-            since={trade.since}
-            onViewVault={() => {}}
-            onShare={() => {}}
-          />
-        ))}
+        <div className="space-y-4">
+          {topTrades.map((trade) => (
+            <VaultCard
+              key={trade.id}
+              variant="light"
+              title={trade.title}
+              username={trade.username}
+              earnings={trade.earnings}
+              invested={trade.invested}
+              since={trade.since}
+              onViewVault={() => {}}
+              onShare={() => {}}
+            />
+          ))}
+        </div>
       </div>
       <Deposit user={user} isOpen={isOpen} onClose={handleCloseDeposit} />
     </div>

@@ -241,10 +241,10 @@ export default function TikTokFeed({
   }, [currentIndex]);
 
   return (
-    <div className="relative h-screen w-full bg-black">
+    <div className="relative h-full w-full bg-black">
       <div
         ref={containerRef}
-        className="relative h-screen w-full overflow-y-scroll snap-y snap-mandatory bg-black overscroll-y-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden pt-16"
+        className="relative h-full w-full overflow-y-scroll snap-y snap-mandatory bg-black overscroll-y-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden pt-16"
         aria-label="TikTok-like video feed"
       >
         {videos.map((v, i) => (

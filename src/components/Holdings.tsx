@@ -7,24 +7,33 @@ import { ProfileAvatar } from "@/components/icons/ProfileAvatar";
 import { SearchIcon } from "@/components/icons/SearchIcon";
 import { Trade } from "@/types";
 import { trendingVaults } from "@/lib/constants";
+import { SettingsMenu } from "@/components/SettingsMenu";
+import { TopTrade } from "@/components/ui/totalBalance";
 
 import { TotalBalance } from "@/components/ui/totalBalance";
 
 export default function Holdings() {
   const [isLoading] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const router = useRouter();
 
   // Mock data for top trades
-  const topTrades: Trade[] = [
+  const topTrades: TopTrade[] = [
     {
       id: "1",
+      title: "SOL Long Position",
       username: "@cryptowhale",
-      avatar: "🐋",
-      token: "$SOL",
-      type: "LONG",
-      leverage: "10x",
-      profit: "+$4,300",
-      timeAgo: "3min ago",
+      earnings: "+$4,300",
+      invested: "$1,200",
+      since: "3min ago",
+    },
+    {
+      id: "2",
+      title: "ETH Long Position",
+      username: "@cryptowhale",
+      earnings: "+$4,300",
+      invested: "$1,200",
+      since: "3min ago",
     },
   ];
 
@@ -37,10 +46,12 @@ export default function Holdings() {
   }
 
   return (
-    <div className="min-h-screen bg-white pb-20">
+    <div className="h-full bg-white overflow-hidden flex flex-col">
       {/* Header */}
       <Header
-        leftComponent={<ProfileAvatar size={56} />}
+        leftComponent={
+          <ProfileAvatar size={56} onClick={() => setIsSettingsOpen(true)} />
+        }
         centerComponent={
           <h1 className="text-xl font-semibold text-gray-900">Explore</h1>
         }
@@ -48,10 +59,18 @@ export default function Holdings() {
         className="pt-12 pb-6"
       />
 
-      <TotalBalance
-        showTrendingVaults={false}
-        topTrades={topTrades}
-        trendingVaults={trendingVaults}
+      <div className="flex-1 overflow-y-auto">
+        <TotalBalance
+          showTrendingVaults={false}
+          topTrades={topTrades}
+          trendingVaults={trendingVaults}
+        />
+      </div>
+
+      {/* Settings Menu */}
+      <SettingsMenu
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
       />
     </div>
   );

@@ -103,9 +103,9 @@ export function Deposit({ user, isOpen, onClose }: DepositProps) {
   };
 
   const formatDisplayAmount = (value: string) => {
-    if (!value) return "0.00";
+    if (!value) return "...";
     const num = parseFloat(value);
-    if (isNaN(num)) return "0.00";
+    if (isNaN(num)) return "...";
     return num.toFixed(2);
   };
 

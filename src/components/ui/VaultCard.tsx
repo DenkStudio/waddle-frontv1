@@ -3,6 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import { Button } from "./button";
+import { useRouter } from "next/navigation";
 
 export interface VaultCardProps {
   title?: string;
@@ -26,13 +27,21 @@ export default function VaultCard({
   yield: yieldValue = "+12.5%",
   timeAgo = "91 days ago",
   earnings = "+$108.9",
-  invested = "4203.48",
+  invested = "$4203.48",
   since = "3mo ago",
   variant = "dark",
   onViewVault,
   onShare,
   className = "",
 }: VaultCardProps) {
+  const router = useRouter();
+
+  const handleViewVault = () => {
+    router.push("/vault");
+    if (onViewVault) {
+      onViewVault();
+    }
+  };
   if (variant === "light") {
     return (
       <div
@@ -86,8 +95,8 @@ export default function VaultCard({
           <div className="flex items-center gap-3">
             <Button
               variant="gradient-blue"
-              onClick={onViewVault}
-              className="flex-1 h-12 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold"
+              onClick={handleViewVault}
+              className="flex-1 h-12 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold"
             >
               View vault
             </Button>
@@ -172,10 +181,10 @@ export default function VaultCard({
         {/* Action buttons section */}
         <div className="flex items-center">
           <div className="relative flex-1 mr-3">
-            <span className="pointer-events-none absolute -inset-x-6 -inset-y-2 rounded-[28px] bg-[radial-gradient(60%_120%_at_50%_100%,rgba(59,130,246,.55),transparent)] blur-2xl opacity-80" />
+            <span className="pointer-events-none rounded-full absolute -inset-x-6 -inset-y-2 rounded-[28px] bg-[radial-gradient(60%_120%_at_50%_100%,rgba(59,130,246,.55),transparent)] blur-2xl opacity-80" />
             <Button
               variant="gradient-blue"
-              onClick={onViewVault}
+              onClick={handleViewVault}
               className="w-full"
             >
               View vault

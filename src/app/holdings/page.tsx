@@ -5,7 +5,7 @@ import Holdings from "@/components/Holdings";
 
 export default function HoldingsPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="h-full bg-white overflow-hidden">
       <Holdings />
     </div>
   );

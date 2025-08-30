@@ -5,7 +5,7 @@ import Vaults from "@/components/Vault";
 
 export default function VaultPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="h-full bg-white overflow-hidden">
       <Vaults />
     </div>
   );
