@@ -159,13 +159,13 @@ export function Deposit({ user, isOpen, onClose }: DepositProps) {
 
   return (
     <div
-      className={`fixed inset-0 bg-black/50 flex items-end justify-center z-50 p-4 transition-opacity duration-300 ${
+      className={`fixed inset-0 bg-black/50 flex items-end justify-center z-50 transition-opacity duration-300 ${
         isClosing ? "opacity-0" : "opacity-100"
       }`}
     >
       <div
         ref={drawerRef}
-        className="bg-white rounded-t-3xl w-full max-w-sm mx-auto overflow-hidden transform transition-all duration-300 ease-out min-h-[90vh]"
+        className="bg-white rounded-t-3xl w-full overflow-hidden transform transition-all duration-300 ease-out min-h-[90vh]"
         style={{
           transform: `translateY(${isClosing ? "100%" : translateY}px)`,
           transition: isDragging ? "none" : "all 0.3s ease-out",
