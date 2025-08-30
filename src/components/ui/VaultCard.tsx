@@ -1,9 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { Button } from "./button";
 import { useRouter } from "next/navigation";
+import StoryView from "../StoryView";
+import { sampleVideos } from "@/lib/sampleVideos";
 
 export interface VaultCardProps {
   title?: string;
@@ -37,6 +39,7 @@ export default function VaultCard({
   className = "",
 }: VaultCardProps) {
   const router = useRouter();
+  const [isStoryOpen, setIsStoryOpen] = useState(false);
 
   const handleViewVault = () => {
     if (vaultAddress) {
@@ -66,8 +69,18 @@ export default function VaultCard({
           {/* Header section */}
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center gap-3">
-              <div className="h-12 w-12 rounded-full bg-lime-400 flex items-center justify-center">
-                <span className="text-black font-bold text-sm">(in)</span>
+              <div
+                className="relative cursor-pointer"
+                onClick={() => setIsStoryOpen(true)}
+              >
+                {/* Instagram story ring with breathing animation */}
+                <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-purple-500 via-pink-500 to-orange-400 p-1 animate-pulse">
+                  <div className="h-full w-full rounded-full bg-gray-100"></div>
+                </div>
+                <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-purple-500 via-pink-500 to-orange-400 animate-ping opacity-20"></div>
+                <div className="relative h-12 w-12 rounded-full bg-lime-400 flex items-center justify-center m-1 hover:scale-105 transition-transform">
+                  <span className="text-black font-bold text-sm">(in)</span>
+                </div>
               </div>
               <div>
                 <h3 className="text-black font-bold text-xl leading-6">
@@ -133,6 +146,15 @@ export default function VaultCard({
             </button>
           </div>
         </div>
+
+        {/* Story View Modal */}
+        <StoryView
+          videos={sampleVideos}
+          isOpen={isStoryOpen}
+          onClose={() => setIsStoryOpen(false)}
+          userName={title}
+          userHandle={username}
+        />
       </div>
     );
   }
@@ -151,14 +173,24 @@ export default function VaultCard({
         {/* Header section */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-full bg-white flex items-center justify-center">
-              <svg
-                className="h-6 w-6 text-black"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path d="M12 2C7.03 2 3 6.03 3 11s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 3.5c1.65 0 3 1.35 3 3 0 2.25-3 5-3 5s-3-2.75-3-5c0-1.65 1.35-3 3-3z" />
-              </svg>
+            <div
+              className="relative cursor-pointer"
+              onClick={() => setIsStoryOpen(true)}
+            >
+              {/* Instagram story ring with breathing animation */}
+              <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-purple-500 via-pink-500 to-orange-400 p-0.5 animate-pulse">
+                <div className="h-full w-full rounded-full bg-black"></div>
+              </div>
+              <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-purple-500 via-pink-500 to-orange-400 animate-ping opacity-20"></div>
+              <div className="relative h-10 w-10 rounded-full bg-white flex items-center justify-center m-0.5 hover:scale-105 transition-transform">
+                <svg
+                  className="h-6 w-6 text-black"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M12 2C7.03 2 3 6.03 3 11s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 3.5c1.65 0 3 1.35 3 3 0 2.25-3 5-3 5s-3-2.75-3-5c0-1.65 1.35-3 3-3z" />
+                </svg>
+              </div>
             </div>
             <div>
               <h3 className="text-white font-semibold text-xl leading-6">
@@ -228,6 +260,15 @@ export default function VaultCard({
           </button>
         </div>
       </div>
+
+      {/* Story View Modal */}
+      <StoryView
+        videos={sampleVideos}
+        isOpen={isStoryOpen}
+        onClose={() => setIsStoryOpen(false)}
+        userName={title}
+        userHandle={username}
+      />
     </div>
   );
 }
