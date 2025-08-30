@@ -48,7 +48,7 @@ export function BottomNavigation({ isDark = false }: BottomNavigationProps) {
   return (
     <div 
       className={cn(
-        "pb-5 fixed bottom-0 left-0 right-0 z-50 border-t backdrop-blur-md",
+        "pb-5 fixed bottom-0 left-0 right-0 z-50 backdrop-blur-md",
         isDark 
           ? "bg-gray-900/95 border-gray-700" 
           : "bg-white/95 border-gray-200"
