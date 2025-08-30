@@ -1,13 +1,8 @@
 "use client";
 
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { Button } from "./ui/button";
 
 // ──────────────────────────────────────────────────────────────────────────────
 // Tipos
@@ -45,6 +40,11 @@ export default function TikTokFeed({
   const [isUserPaused, setIsUserPaused] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
 
+  // Control de paginación para wheel/trackpad
+  const isPagingRef = useRef(false);
+  const targetIndexRef = useRef<number | null>(null);
+  const wheelAccumRef = useRef(0);
+
   // ────────────────────────────────────────────────────────────────────────────
   // Utilidades
   // ────────────────────────────────────────────────────────────────────────────
@@ -68,14 +68,10 @@ export default function TikTokFeed({
     async (i: number) => {
       const v = videoRefs.current[i];
       if (!v) return;
-      v.muted = isMuted; // mantener coherencia
+      v.muted = isMuted;
       try {
-        if (!isUserPaused) {
-          await v.play();
-        }
-      } catch (_) {
-        // iOS/Safari podría bloquear; ignoramos error
-      }
+        if (!isUserPaused) await v.play();
+      } catch {}
     },
     [isMuted, isUserPaused]
   );
@@ -86,9 +82,6 @@ export default function TikTokFeed({
     v.pause();
   }, []);
 
-  // ────────────────────────────────────────────────────────────────────────────
-  // IntersectionObserver para autoplay/pausa según visibilidad (>60%)
-  // ────────────────────────────────────────────────────────────────────────────
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -100,15 +93,11 @@ export default function TikTokFeed({
 
         entries.forEach((entry) => {
           const target = entry.target as HTMLVideoElement;
-          const idxAttr = target.getAttribute("data-index");
-          const idx = idxAttr ? parseInt(idxAttr, 10) : -1;
+          const idx = parseInt(target.getAttribute("data-index") || "-1", 10);
           const ratio = entry.intersectionRatio;
 
-          if (ratio > 0.6) {
-            playVideoAt(idx);
-          } else {
-            pauseVideoAt(idx);
-          }
+          if (ratio > 0.6) playVideoAt(idx);
+          else pauseVideoAt(idx);
 
           if (ratio > bestRatio) {
             bestRatio = ratio;
@@ -116,20 +105,25 @@ export default function TikTokFeed({
           }
         });
 
-        if (mostVisibleIdx !== null && mostVisibleIdx !== currentIndex) {
+        if (mostVisibleIdx == null) return;
+
+        if (isPagingRef.current) {
+          if (targetIndexRef.current === mostVisibleIdx && bestRatio >= 0.88) {
+            setCurrentIndex(mostVisibleIdx);
+            onIndexChange?.(mostVisibleIdx);
+          }
+          return;
+        }
+
+        if (mostVisibleIdx !== currentIndex) {
           setCurrentIndex(mostVisibleIdx);
           onIndexChange?.(mostVisibleIdx);
         }
       },
-      {
-        root: container,
-        threshold: [0, 0.25, 0.6, 0.9, 1],
-      }
+      { root: container, threshold: [0, 0.25, 0.6, 0.88, 1] }
     );
 
-    // observar cada <video>
     videoRefs.current.forEach((el) => el && observer.observe(el));
-
     return () => observer.disconnect();
   }, [currentIndex, onIndexChange, pauseVideoAt, playVideoAt]);
 
@@ -146,41 +140,50 @@ export default function TikTokFeed({
     return () => cancelAnimationFrame(id);
   }, []); // eslint-disable-line
 
-  // Snap manual con wheel/teclas
+  // Wheel/trackpad → un gesto = 1 paso (acumulador + cooldown)
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    let wheelBlock = false;
-    let wheelTimeout: ReturnType<typeof setTimeout> | null = null;
+    const THRESHOLD = 120;
+    const COOLDOWN_MS = 420;
 
-    const onWheel = (e: WheelEvent) => {
-      // Deja que el scroll-snap haga lo suyo, pero aceleramos el snap
-      if (wheelBlock) return;
-      wheelBlock = true;
-      const dir = e.deltaY > 0 ? 1 : -1;
-      const next = clampIndex(currentIndex + dir);
-      scrollToIndex(next);
-      if (wheelTimeout) clearTimeout(wheelTimeout);
-      wheelTimeout = setTimeout(() => (wheelBlock = false), 350);
+    let cooldownTimer: ReturnType<typeof setTimeout> | null = null;
+
+    const unlock = () => {
+      isPagingRef.current = false;
+      targetIndexRef.current = null;
+      wheelAccumRef.current = 0;
     };
 
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "ArrowDown" || e.key === "PageDown") {
-        e.preventDefault();
-        scrollToIndex(currentIndex + 1);
-      } else if (e.key === "ArrowUp" || e.key === "PageUp") {
-        e.preventDefault();
-        scrollToIndex(currentIndex - 1);
+    const onWheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaY) < Math.abs(e.deltaX)) return;
+      e.preventDefault();
+
+      if (isPagingRef.current) return;
+
+      wheelAccumRef.current += e.deltaY;
+
+      if (Math.abs(wheelAccumRef.current) >= THRESHOLD) {
+        const dir = wheelAccumRef.current > 0 ? 1 : -1;
+        wheelAccumRef.current = 0;
+
+        const next = clampIndex(currentIndex + dir);
+        if (next !== currentIndex) {
+          isPagingRef.current = true;
+          targetIndexRef.current = next;
+          scrollToIndex(next, "auto");
+
+          if (cooldownTimer) clearTimeout(cooldownTimer);
+          cooldownTimer = setTimeout(unlock, COOLDOWN_MS);
+        }
       }
     };
 
-    container.addEventListener("wheel", onWheel, { passive: true });
-    window.addEventListener("keydown", onKey);
+    container.addEventListener("wheel", onWheel, { passive: false });
     return () => {
       container.removeEventListener("wheel", onWheel);
-      window.removeEventListener("keydown", onKey);
-      if (wheelTimeout) clearTimeout(wheelTimeout);
+      if (cooldownTimer) clearTimeout(cooldownTimer);
     };
   }, [currentIndex, clampIndex, scrollToIndex]);
 
@@ -204,12 +207,11 @@ export default function TikTokFeed({
 
     const onTouchEnd = () => {
       setIsDragging(false);
-      const threshold = 50; // px
+      const threshold = 50;
       if (Math.abs(movedY) > threshold) {
-        const dir = movedY < 0 ? 1 : -1; // arriba → siguiente
+        const dir = movedY < 0 ? 1 : -1;
         scrollToIndex(currentIndex + dir);
       } else {
-        // Snap al más cercano por si quedó en medio
         scrollToIndex(currentIndex);
       }
     };
@@ -225,11 +227,6 @@ export default function TikTokFeed({
     };
   }, [currentIndex, scrollToIndex]);
 
-  // ────────────────────────────────────────────────────────────────────────────
-  // Handlers UI
-  // ────────────────────────────────────────────────────────────────────────────
-  const toggleMute = useCallback(() => setIsMuted((m) => !m), []);
-
   const togglePlay = useCallback(() => {
     const v = videoRefs.current[currentIndex];
     if (!v) return;
@@ -242,72 +239,50 @@ export default function TikTokFeed({
     }
   }, [currentIndex]);
 
-  const goNext = useCallback(
-    () => scrollToIndex(currentIndex + 1),
-    [currentIndex, scrollToIndex]
-  );
-  const goPrev = useCallback(
-    () => scrollToIndex(currentIndex - 1),
-    [currentIndex, scrollToIndex]
-  );
-
-  // ────────────────────────────────────────────────────────────────────────────
-  // UI
-  // ──────────────────────────────────────────────────────────────────────────────
   return (
     <div className="relative h-screen w-full bg-black">
-      {/* Fixed Header */}
       <header className="fixed top-0 left-0 right-0 z-50">
         <div className="flex items-center justify-between px-4 py-3">
-          {/* Left side - Logo/Brand */}
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+            <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center">
               <Image
                 src="/images/profile.png"
                 alt="Waddle"
-                width={32}
-                height={32}
+                width={64}
+                height={64}
               />
             </div>
           </div>
-          <Image
-            src="/logos/logo-white.svg"
-            alt="Waddle"
-            width={32}
-            height={32}
-          />
-
-          {/* Right side - Notifications & Profile */}
+          <div className="">
+            <Image
+              src="/logos/logo-white.svg"
+              alt="Waddle"
+              width={64}
+              height={64}
+            />
+          </div>
           <div className="flex items-center space-x-3">
-            <button className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-              <svg
-                className="w-4 h-4 text-white/60"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
+            <button className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
+              <Image
+                src="/logos/search.svg"
+                alt="Notification"
+                width={24}
+                height={24}
+              />
             </button>
           </div>
         </div>
       </header>
 
-      {/* Video Feed Container - Adjusted for header height */}
       <div
         ref={containerRef}
-        className="relative h-screen w-full overflow-y-scroll snap-y snap-mandatory scroll-smooth bg-black [scrollbar-width:none] [&::-webkit-scrollbar]:hidden pt-16"
+        className="relative h-screen w-full overflow-y-scroll snap-y snap-mandatory bg-black overscroll-y-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden pt-16"
         aria-label="TikTok-like video feed"
       >
         {videos.map((v, i) => (
           <section
             key={v.id}
-            className="relative h-screen w-full snap-start"
+            className="relative h-screen w-full snap-start snap-always"
             aria-roledescription="slide"
             aria-label={`Video ${i + 1} de ${videos.length}`}
           >
@@ -323,57 +298,84 @@ export default function TikTokFeed({
               muted
               loop
               preload="metadata"
-              // iOS requiere interacción en algunos casos si no está muted
               onClick={togglePlay}
             />
 
-            {/* Gradiente para legibilidad del caption */}
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/70 to-transparent" />
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
 
-            {/* HUD / Controles */}
-            <div className="absolute inset-0 flex items-end justify-between p-4 sm:p-6">
-              {/* Texto izquierda */}
-              <div className="max-w-[75%] text-white select-none">
-                {v.author && (
-                  <p className="mb-1 text-sm/5 opacity-90">@{v.author}</p>
-                )}
-                {v.caption && (
-                  <p className="text-base/6 font-medium drop-shadow-[0_1px_1px_rgba(0,0,0,0.6)]">
-                    {v.caption}
-                  </p>
-                )}
-              </div>
+            <div className="absolute left-2 right-2 bottom-32">
+              <div className="relative rounded-[40px] border border-white/20 bg-black/50 backdrop-blur-xl shadow-[0_20px_60px_rgba(0,0,0,.8)] overflow-hidden">
+                <div className="pointer-events-none absolute inset-0 rounded-[40px] bg-[linear-gradient(180deg,rgba(255,255,255,.10)_0%,rgba(255,255,255,.04)_35%,rgba(0,0,0,.40)_100%)]" />
+                <div className="pointer-events-none absolute inset-0 rounded-[40px] ring-1 ring-inset ring-white/5" />
+                <div className="pointer-events-none absolute inset-0 rounded-[40px] bg-[radial-gradient(120%_140%_at_50%_120%,transparent,rgba(0,0,0,.35))]" />
 
-              {/* Botonera derecha */}
-              <div className="flex flex-col items-center gap-3 text-white">
-                <IconButton label="Mute/Unmute" onClick={toggleMute}>
-                  {isMuted ? (
-                    <SpeakerOffIcon className="h-7 w-7" />
-                  ) : (
-                    <SpeakerOnIcon className="h-7 w-7" />
-                  )}
-                </IconButton>
+                <div className="relative p-6">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-full bg-white flex items-center justify-center">
+                        <svg
+                          className="h-6 w-6 text-black"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                        >
+                          <path d="M12 2C7.03 2 3 6.03 3 11s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 3.5c1.65 0 3 1.35 3 3 0 2.25-3 5-3 5s-3-2.75-3-5c0-1.65 1.35-3 3-3z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 className="text-white font-semibold text-xl leading-6">
+                          Insiders Club
+                        </h3>
+                        <p className="text-white/70 text-[15px] leading-5">
+                          @cryptowhale
+                        </p>
+                      </div>
+                    </div>
 
-                <IconButton label="Play/Pause" onClick={togglePlay}>
-                  {isUserPaused ? (
-                    <PlayIcon className="h-7 w-7" />
-                  ) : (
-                    <PauseIcon className="h-7 w-7" />
-                  )}
-                </IconButton>
-
-                <IconButton label="Anterior" onClick={goPrev}>
-                  <UpIcon className="h-7 w-7" />
-                </IconButton>
-                <IconButton label="Siguiente" onClick={goNext}>
-                  <DownIcon className="h-7 w-7" />
-                </IconButton>
-
-                {typeof v.likes === "number" && (
-                  <div className="mt-2 text-center text-xs opacity-90">
-                    <p className="font-semibold">❤ {formatNumber(v.likes)}</p>
+                    <svg
+                      className="w-5 h-5 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M7 4h10a2 2 0 012 2v13l-7-3-7 3V6a2 2 0 012-2z" />
+                    </svg>
                   </div>
-                )}
+
+                  <div className="flex flex-wrap gap-1 mb-5">
+                    <span className="px-4 py-2 rounded-full bg-white/10 text-white/90 text-sm border border-white/15 shadow-inner backdrop-blur-sm">
+                      Liquidity <span className="font-semibold">+$52m</span>
+                    </span>
+                    <span className="px-4 py-2 rounded-full bg-white/10 text-white/90 text-sm border border-white/15 shadow-inner backdrop-blur-sm">
+                      Yield{" "}
+                      <span className="text-green-400 font-semibold">
+                        +12.5%
+                      </span>
+                    </span>
+                    <span className="px-4 py-2 rounded-full bg-white/10 text-white/90 text-sm border border-white/15 shadow-inner backdrop-blur-sm">
+                      91 days ago
+                    </span>
+                  </div>
+
+                  <div className="flex items-center">
+                    <div className="relative flex-1 mr-3">
+                      <span className="pointer-events-none absolute -inset-x-6 -inset-y-2 rounded-[28px] bg-[radial-gradient(60%_120%_at_50%_100%,rgba(59,130,246,.55),transparent)] blur-2xl opacity-80" />
+                      <Button variant="gradient-blue">View vault</Button>
+                    </div>
+
+                    <button
+                      aria-label="Share"
+                      className="h-12 w-12 rounded-full bg-white/5 border border-white/15 backdrop-blur-sm flex items-center justify-center hover:bg-white/10 transition"
+                    >
+                      <Image
+                        src="/logos/redirect.svg"
+                        alt="Share"
+                        width={20}
+                        height={20}
+                      />
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </section>
@@ -381,79 +383,4 @@ export default function TikTokFeed({
       </div>
     </div>
   );
-}
-
-// ──────────────────────────────────────────────────────────────────────────────
-// Componentes auxiliares
-// ──────────────────────────────────────────────────────────────────────────────
-function IconButton({
-  children,
-  onClick,
-  label,
-}: {
-  children: React.ReactNode;
-  onClick?: () => void;
-  label: string;
-}) {
-  return (
-    <button
-      type="button"
-      aria-label={label}
-      onClick={(e) => {
-        e.stopPropagation();
-        onClick?.();
-      }}
-      className="grid h-12 w-12 place-items-center rounded-2xl bg-white/10 backdrop-blur-md transition active:scale-95"
-    >
-      {children}
-    </button>
-  );
-}
-
-function PlayIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
-      <path d="M8 5v14l11-7z" />
-    </svg>
-  );
-}
-function PauseIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
-      <path d="M6 5h4v14H6zM14 5h4v14h-4z" />
-    </svg>
-  );
-}
-function SpeakerOffIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
-      <path d="M16.5 12l3-3 1.5 1.5-3 3 3 3-1.5 1.5-3-3-3 3L12 16.5l3-3-3-3L13.5 7l3 3zM3 9h4l5-4v14l-5-4H3z" />
-    </svg>
-  );
-}
-function SpeakerOnIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
-      <path d="M14 3.23v17.53c3.39-1.19 6-4.39 6-8.77s-2.61-7.58-6-8.76zM3 9h4l5-4v14l-5-4H3z" />
-    </svg>
-  );
-}
-function UpIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
-      <path d="M7 14l5-5 5 5H7z" />
-    </svg>
-  );
-}
-function DownIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
-      <path d="M7 10l5 5 5-5H7z" />
-    </svg>
-  );
-}
-
-function formatNumber(n?: number) {
-  if (typeof n !== "number") return "";
-  return new Intl.NumberFormat("es-AR", { notation: "compact" }).format(n);
 }
