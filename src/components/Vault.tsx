@@ -49,7 +49,11 @@ interface AssetPosition {
   };
 }
 
-export default function Vaults() {
+interface VaultsProps {
+  vaultAddress?: string;
+}
+
+export default function Vaults({ vaultAddress }: VaultsProps) {
   const { user } = usePrivy();
   const [isInvestOpen, setIsInvestOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -232,20 +236,22 @@ export default function Vaults() {
 
   // Fetch vault details and positions on component mount
   useEffect(() => {
-    const testnetVaultAddress = "0xfe63937e71b9ea1fb474eaf767664840188b7754";
-    fetchVaultDetails(testnetVaultAddress);
-    fetchVaultPositions(testnetVaultAddress);
-  }, []);
+    const targetVaultAddress =
+      vaultAddress || "0xfe63937e71b9ea1fb474eaf767664840188b7754";
+    fetchVaultDetails(targetVaultAddress);
+    fetchVaultPositions(targetVaultAddress);
+  }, [vaultAddress]);
 
   // Fetch user's vault position when authenticated
   useEffect(() => {
     if (user?.wallet?.address) {
-      const testnetVaultAddress = "0xfe63937e71b9ea1fb474eaf767664840188b7754";
-      fetchUserVaultPosition(user.wallet.address, testnetVaultAddress);
+      const targetVaultAddress =
+        vaultAddress || "0xfe63937e71b9ea1fb474eaf767664840188b7754";
+      fetchUserVaultPosition(user.wallet.address, targetVaultAddress);
     } else {
       setUserVaultPosition({ loading: false, data: null, error: null });
     }
-  }, [user?.wallet?.address]);
+  }, [user?.wallet?.address, vaultAddress]);
 
   if (vaultDetails.loading) {
     return (
@@ -342,7 +348,7 @@ export default function Vaults() {
                   <p className="text-gray-600 text-sm text-center">
                     {userVaultPosition.error ===
                     "No position found in this vault"
-                      ? "You&apos;re not following this vault yet"
+                      ? "You're not following this vault yet"
                       : userVaultPosition.error}
                   </p>
                   <p className="text-xs text-gray-500 text-center mt-2">

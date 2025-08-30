@@ -21,6 +21,9 @@ export type TikTokFeedProps = {
   videos: FeedVideo[];
   initialIndex?: number;
   onIndexChange?: (index: number) => void;
+  onVideoEnd?: (videoId: string) => void;
+  onVideoPlay?: (videoId: string) => void;
+  onVideoPause?: (videoId: string) => void;
 };
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -30,6 +33,9 @@ export default function TikTokFeed({
   videos,
   initialIndex = 0,
   onIndexChange,
+  onVideoEnd,
+  onVideoPlay,
+  onVideoPause,
 }: TikTokFeedProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
