@@ -25,7 +25,7 @@ export function BottomNavigation({ isDark = false }: BottomNavigationProps) {
   const navItems: NavItem[] = [
     {
       id: "menu",
-      path: "/menu",
+      path: "/",
       icon: (isActive, isDark) => <CustomMenuIcon isActive={isActive} isDark={isDark} />,
     },
     {
