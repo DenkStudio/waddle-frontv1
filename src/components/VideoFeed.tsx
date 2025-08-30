@@ -241,39 +241,6 @@ export default function TikTokFeed({
 
   return (
     <div className="relative h-screen w-full bg-black">
-      <header className="fixed top-0 left-0 right-0 z-50">
-        <div className="flex items-center justify-between px-4 py-3">
-          <div className="flex items-center space-x-3">
-            <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center">
-              <Image
-                src="/images/profile.png"
-                alt="Waddle"
-                width={64}
-                height={64}
-              />
-            </div>
-          </div>
-          <div className="">
-            <Image
-              src="/logos/logo-white.svg"
-              alt="Waddle"
-              width={64}
-              height={64}
-            />
-          </div>
-          <div className="flex items-center space-x-3">
-            <button className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
-              <Image
-                src="/logos/search.svg"
-                alt="Notification"
-                width={24}
-                height={24}
-              />
-            </button>
-          </div>
-        </div>
-      </header>
-
       <div
         ref={containerRef}
         className="relative h-screen w-full overflow-y-scroll snap-y snap-mandatory bg-black overscroll-y-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden pt-16"
