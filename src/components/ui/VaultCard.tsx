@@ -48,6 +48,15 @@ export default function VaultCard({
       onViewVault();
     }
   };
+
+  const handleChat = () => {
+    const chatVaultId =
+      vaultAddress || "0xfe63937e71b9ea1fb474eaf767664840188b7754";
+    router.push(`/chat/${chatVaultId}`);
+    if (onShare) {
+      onShare();
+    }
+  };
   if (variant === "light") {
     return (
       <div
@@ -110,7 +119,7 @@ export default function VaultCard({
             <button
               aria-label="Chat"
               className="h-12 w-12 rounded-full bg-black text-white flex items-center justify-center hover:bg-gray-800 transition"
-              onClick={onShare}
+              onClick={handleChat}
             >
               <svg
                 className="w-5 h-5"
@@ -200,7 +209,7 @@ export default function VaultCard({
           <button
             aria-label="Share"
             className="h-12 w-12 rounded-full bg-white/5 border border-white/15 backdrop-blur-sm flex items-center justify-center hover:bg-white/10 transition"
-            onClick={onShare}
+            onClick={handleChat}
           >
             <Image
               src="/logos/redirect.svg"
