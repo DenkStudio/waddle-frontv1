@@ -233,12 +233,7 @@ export default function VaultCard({
             className="h-12 w-12 rounded-full bg-white/5 border border-white/15 backdrop-blur-sm flex items-center justify-center hover:bg-white/10 transition"
             onClick={handleChat}
           >
-            <Image
-              src="/logos/redirect.svg"
-              alt="Share"
-              width={20}
-              height={20}
-            />
+            <Image src="/logos/chat.svg" alt="Share" width={20} height={20} />
           </button>
         </div>
       </div>

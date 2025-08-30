@@ -517,7 +517,7 @@ export default function Vaults({ vaultAddress }: VaultsProps) {
               <Image src="/logos/chat.svg" alt="chat" width={24} height={24} />
             </button>
 
-            <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+            <div className="absolute -top-2 right-0 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
               <span className="text-white text-xs font-bold">10</span>
             </div>
           </div>
