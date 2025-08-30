@@ -12,6 +12,7 @@
     "type-check:watch": "tsc --noEmit --watch"
   },
   "dependencies": {
+    "@coinbase/onchainkit": "^0.38.19",
     "@nktkas/hyperliquid": "^0.16.0",
     "@privy-io/react-auth": "^2.24.0",
     "@privy-io/server-auth": "^1.32.2",

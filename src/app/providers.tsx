@@ -1,6 +1,8 @@
 "use client";
 
+import { MiniKitContextProvider } from "@/providers/MiniKitContextProvider";
 import { PrivyProvider } from "@privy-io/react-auth";
+import { base } from "wagmi/chains";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -31,9 +33,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
             connectionOptions: "all",
           },
         },
+        // Optimize for MiniKit environment
+        defaultChain: base,
       }}
     >
-      {children}
+      <MiniKitContextProvider>{children}</MiniKitContextProvider>
     </PrivyProvider>
   );
 }
