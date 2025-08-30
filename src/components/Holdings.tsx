@@ -17,26 +17,6 @@ export default function Holdings() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const router = useRouter();
 
-  // Mock data for top trades
-  const topTrades: TopTrade[] = [
-    {
-      id: "1",
-      title: "SOL Long Position",
-      username: "@cryptowhale",
-      earnings: "+$4,300",
-      invested: "$1,200",
-      since: "3min ago",
-    },
-    {
-      id: "2",
-      title: "ETH Long Position",
-      username: "@cryptowhale",
-      earnings: "+$4,300",
-      invested: "$1,200",
-      since: "3min ago",
-    },
-  ];
-
   if (isLoading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
@@ -62,7 +42,6 @@ export default function Holdings() {
       <div className="flex-1 overflow-y-auto">
         <TotalBalance
           showTrendingVaults={false}
-          topTrades={topTrades}
           trendingVaults={trendingVaults}
         />
       </div>

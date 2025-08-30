@@ -23,26 +23,6 @@ export default function Home() {
     }
   }, [ready, authenticated, router]);
 
-  // Mock data for top trades (fixed to match TopTrade interface)
-  const topTrades = [
-    {
-      id: "1",
-      title: "SOL Long Position",
-      username: "@cryptowhale",
-      earnings: "+$4,300",
-      invested: "$1,200",
-      since: "3min ago",
-    },
-    {
-      id: "2",
-      title: "ETH Short Play",
-      username: "@defi_master",
-      earnings: "+$2,850",
-      invested: "$800",
-      since: "15min ago",
-    },
-  ];
-
   // Show loading while Privy is initializing
   if (!ready) {
     return (
@@ -76,7 +56,7 @@ export default function Home() {
       />
 
       <div className="flex-1 overflow-y-auto">
-        <TotalBalance topTrades={topTrades} trendingVaults={trendingVaults} />
+        <TotalBalance trendingVaults={trendingVaults} />
       </div>
 
       {/* Settings Menu */}
