@@ -16,6 +16,8 @@ export default function RootLayout({
 
   // Don't show bottom navigation on login page
   const hideBottomNav = pathname === "/login";
+  const darkRoutes = ["/feed", "/another-dark-page"];
+  const isDarkNavigation = darkRoutes.includes(pathname);
 
   return (
     <Providers>
@@ -122,7 +124,7 @@ export default function RootLayout({
           <ToastProvider>
             <div className="relative flex h-screen flex-col overflow-hidden">
               <main className="flex-1 overflow-hidden">{children}</main>
-              {!hideBottomNav && <BottomNavigation isDark={false} />}
+              {!hideBottomNav && <BottomNavigation isDark={isDarkNavigation} />}
             </div>
           </ToastProvider>
         </body>
