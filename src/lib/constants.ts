@@ -46,19 +46,22 @@ export const ANIMATION_DURATIONS = {
 
 export const trendingVaults: CryptoToken[] = [
   {
-    apr: "100%",
-    name: "Dogecoin1",
-    src: "https://yt3.googleusercontent.com/ytc/AIdro_mir_9R_w9VCBNv2_PZnY3Q5fm5tkr8c0EXFTMaG9nPMA=s900-c-k-c0x00ffffff-no-rj",
+    apr: "1.1%",
+    name: "Money Burner",
+    src: "/images/vault1.png",
+    vaultAddress: "0x9221d0087d0b59c4dd6347ee9d6d35601b9b39ea",
   },
   {
-    apr: "100%",
-    name: "Dogecoin",
-    src: "https://yt3.googleusercontent.com/ytc/AIdro_mir_9R_w9VCBNv2_PZnY3Q5fm5tkr8c0EXFTMaG9nPMA=s900-c-k-c0x00ffffff-no-rj",
+    apr: "0.1%",
+    name: "Rikke's pool",
+    src: "/images/vault2.png",
+    vaultAddress: "0x9b5a8e4a326418916dbe0c345ced0dbbda66a3e1",
   },
   {
-    apr: "100%",
-    name: "Dogecoin2",
-    src: "https://yt3.googleusercontent.com/ytc/AIdro_mir_9R_w9VCBNv2_PZnY3Q5fm5tkr8c0EXFTMaG9nPMA=s900-c-k-c0x00ffffff-no-rj",
+    apr: "0.4%",
+    name: "Kagman's Grid",
+    src: "/images/vault3.png",
+    vaultAddress: "0xe9b89e63ac37d080a988e7464ee0e362870a022e",
   },
 ];
 

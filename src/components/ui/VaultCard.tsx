@@ -15,6 +15,7 @@ export interface VaultCardProps {
   invested?: string;
   since?: string;
   variant?: "dark" | "light";
+  vaultAddress?: string;
   onViewVault?: () => void;
   onShare?: () => void;
   className?: string;
@@ -30,6 +31,7 @@ export default function VaultCard({
   invested = "$4203.48",
   since = "3mo ago",
   variant = "dark",
+  vaultAddress,
   onViewVault,
   onShare,
   className = "",
@@ -37,7 +39,11 @@ export default function VaultCard({
   const router = useRouter();
 
   const handleViewVault = () => {
-    router.push("/vault");
+    if (vaultAddress) {
+      router.push(`/vault/${vaultAddress}`);
+    } else {
+      router.push("/vault/0xfe63937e71b9ea1fb474eaf767664840188b7754");
+    }
     if (onViewVault) {
       onViewVault();
     }

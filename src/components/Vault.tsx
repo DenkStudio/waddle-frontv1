@@ -49,7 +49,11 @@ interface AssetPosition {
   };
 }
 
-export default function Vaults() {
+interface VaultsProps {
+  vaultAddress?: string;
+}
+
+export default function Vaults({ vaultAddress }: VaultsProps) {
   const { user } = usePrivy();
   const [isInvestOpen, setIsInvestOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -232,20 +236,22 @@ export default function Vaults() {
 
   // Fetch vault details and positions on component mount
   useEffect(() => {
-    const testnetVaultAddress = "0xfe63937e71b9ea1fb474eaf767664840188b7754";
-    fetchVaultDetails(testnetVaultAddress);
-    fetchVaultPositions(testnetVaultAddress);
-  }, []);
+    const targetVaultAddress =
+      vaultAddress || "0xfe63937e71b9ea1fb474eaf767664840188b7754";
+    fetchVaultDetails(targetVaultAddress);
+    fetchVaultPositions(targetVaultAddress);
+  }, [vaultAddress]);
 
   // Fetch user's vault position when authenticated
   useEffect(() => {
     if (user?.wallet?.address) {
-      const testnetVaultAddress = "0xfe63937e71b9ea1fb474eaf767664840188b7754";
-      fetchUserVaultPosition(user.wallet.address, testnetVaultAddress);
+      const targetVaultAddress =
+        vaultAddress || "0xfe63937e71b9ea1fb474eaf767664840188b7754";
+      fetchUserVaultPosition(user.wallet.address, targetVaultAddress);
     } else {
       setUserVaultPosition({ loading: false, data: null, error: null });
     }
-  }, [user?.wallet?.address]);
+  }, [user?.wallet?.address, vaultAddress]);
 
   if (vaultDetails.loading) {
     return (
@@ -269,8 +275,8 @@ export default function Vaults() {
         className="pt-12 pb-6"
       />
 
-      <div className="flex-1 overflow-y-auto">
-        <div className="bg-white rounded-2xl mb-6">
+      <div className="flex-1 overflow-y-auto pb-52">
+        <div className="bg-white rounded-2xl mb-3">
           {/* Profile Picture */}
           <div className="flex justify-center mb-4">
             <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center">
@@ -281,7 +287,7 @@ export default function Vaults() {
           </div>
 
           {/* Name and Handle */}
-          <div className="text-center mb-6">
+          <div className="text-center mb-3">
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
               {vaultDetails.data?.name || "Loading..."}
             </h2>
@@ -321,105 +327,81 @@ export default function Vaults() {
 
           <div className="w-full h-px bg-gray-200 my-4"></div>
 
-          {/* User's Vault Position */}
-          {user?.wallet?.address && (
+          {/* User's Vault Position - Only show if user has a position */}
+          {user?.wallet?.address && userVaultPosition.data && (
             <div className="mb-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
                 Your Position
               </h3>
 
-              {userVaultPosition.loading && (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-                    <p className="text-blue-700">Loading your position...</p>
-                  </div>
-                </div>
-              )}
-
-              {userVaultPosition.error && (
-                <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                  <p className="text-gray-600 text-sm text-center">
-                    {userVaultPosition.error ===
-                    "No position found in this vault"
-                      ? "You&apos;re not following this vault yet"
-                      : userVaultPosition.error}
-                  </p>
-                  <p className="text-xs text-gray-500 text-center mt-2">
-                    Click &quot;Invest&quot; below to join this vault
-                  </p>
-                </div>
-              )}
-
-              {userVaultPosition.data && (
-                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-3">
-                      <span>✅</span>
-                      <span className="text-sm font-medium text-green-800">
-                        You&apos;re following this vault
-                      </span>
-                    </div>
-                    <span className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full">
-                      {userVaultPosition.data.daysFollowing} days
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <span>✅</span>
+                    <span className="text-sm font-medium text-green-800">
+                      You&apos;re following this vault
                     </span>
                   </div>
-                  <div className="grid grid-cols-3 gap-4 text-center">
-                    <div>
-                      <p className="text-sm text-gray-600 mb-1">Your Equity</p>
-                      <p className="text-lg font-semibold text-gray-900">
-                        $
-                        {Number(
-                          userVaultPosition.data.vaultEquity
-                        ).toLocaleString(undefined, {
+                  <span className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full">
+                    {userVaultPosition.data.daysFollowing} days
+                  </span>
+                </div>
+                <div className="grid grid-cols-3 gap-4 text-center">
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Your Equity</p>
+                    <p className="text-lg font-semibold text-gray-900">
+                      $
+                      {Number(
+                        userVaultPosition.data.vaultEquity
+                      ).toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Current P&L</p>
+                    <p
+                      className={`text-lg font-semibold ${
+                        Number(userVaultPosition.data.pnl) >= 0
+                          ? "text-green-600"
+                          : "text-red-600"
+                      }`}
+                    >
+                      {Number(userVaultPosition.data.pnl) >= 0 ? "+" : ""}$
+                      {Number(userVaultPosition.data.pnl).toLocaleString(
+                        undefined,
+                        {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2,
-                        })}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-600 mb-1">Current P&L</p>
-                      <p
-                        className={`text-lg font-semibold ${
-                          Number(userVaultPosition.data.pnl) >= 0
-                            ? "text-green-600"
-                            : "text-red-600"
-                        }`}
-                      >
-                        {Number(userVaultPosition.data.pnl) >= 0 ? "+" : ""}$
-                        {Number(userVaultPosition.data.pnl).toLocaleString(
-                          undefined,
-                          {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          }
-                        )}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-600 mb-1">All-Time P&L</p>
-                      <p
-                        className={`text-lg font-semibold ${
-                          Number(userVaultPosition.data.allTimePnl) >= 0
-                            ? "text-green-600"
-                            : "text-red-600"
-                        }`}
-                      >
-                        {Number(userVaultPosition.data.allTimePnl) >= 0
-                          ? "+"
-                          : ""}
-                        $
-                        {Number(
-                          userVaultPosition.data.allTimePnl
-                        ).toLocaleString(undefined, {
+                        }
+                      )}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">All-Time P&L</p>
+                    <p
+                      className={`text-lg font-semibold ${
+                        Number(userVaultPosition.data.allTimePnl) >= 0
+                          ? "text-green-600"
+                          : "text-red-600"
+                      }`}
+                    >
+                      {Number(userVaultPosition.data.allTimePnl) >= 0
+                        ? "+"
+                        : ""}
+                      $
+                      {Number(userVaultPosition.data.allTimePnl).toLocaleString(
+                        undefined,
+                        {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2,
-                        })}
-                      </p>
-                    </div>
+                        }
+                      )}
+                    </p>
                   </div>
                 </div>
-              )}
+              </div>
 
               <div className="w-full h-px bg-gray-200 my-4"></div>
             </div>
@@ -457,7 +439,7 @@ export default function Vaults() {
 
         {/* Real Position Cards */}
         {vaultPositions.data && vaultPositions.data.length > 0 && (
-          <div className="space-y-4">
+          <div className="space-y-4 -mx-4 px-4">
             {vaultPositions.data.map((position, index) => {
               const szi = parseFloat(position.position.szi);
               const entryPx = parseFloat(position.position.entryPx || "0");
@@ -503,14 +485,11 @@ export default function Vaults() {
             Invest
           </button>
 
-          {/* Circular Black Chat Icon with Notification Badge */}
           <div className="relative">
             <button className="w-16 h-16 bg-black rounded-full flex items-center justify-center shadow-lg hover:bg-gray-800 transition-colors">
-              {/* Chat Icon */}
               <Image src="/logos/chat.svg" alt="chat" width={24} height={24} />
             </button>
 
-            {/* Notification Badge */}
             <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
               <span className="text-white text-xs font-bold">10</span>
             </div>

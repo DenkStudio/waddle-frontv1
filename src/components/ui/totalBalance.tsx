@@ -14,6 +14,7 @@ interface TrendingVault {
   name: string;
   src: string;
   apr: string;
+  vaultAddress: string;
 }
 
 export interface TopTrade {
@@ -281,8 +282,12 @@ export function TotalBalance({
 
           <div className="flex space-x-6 overflow-x-auto pb-2 scrollbar-hide">
             {trendingVaults.map((vault) => (
-              <div key={vault.name} className="flex-shrink-0 w-20 text-center">
-                <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-2xl mb-2 mx-auto ">
+              <button
+                key={vault.name}
+                onClick={() => router.push(`/vault/${vault.vaultAddress}`)}
+                className="flex-shrink-0 w-20 text-center hover:opacity-80 transition-opacity"
+              >
+                <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-2xl mb-2 mx-auto">
                   <Image
                     width={64}
                     height={64}
@@ -297,7 +302,7 @@ export function TotalBalance({
                 <p className="text-xs text-gray-500 mt-1 bg-gray-100 rounded-full px-2 py-1">
                   APR <span className="text-green-500">{vault.apr}</span>
                 </p>
-              </div>
+              </button>
             ))}
           </div>
         </div>
@@ -375,7 +380,11 @@ export function TotalBalance({
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
                   })}`}
-                  onViewVault={() => router.push("/vault")}
+                  onViewVault={() =>
+                    router.push(
+                      "/vault/0xfe63937e71b9ea1fb474eaf767664840188b7754"
+                    )
+                  }
                   onShare={() => {}}
                 />
               );

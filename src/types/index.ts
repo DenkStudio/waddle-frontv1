@@ -70,6 +70,7 @@ export interface CryptoToken {
   apr: string;
   name: string;
   src: string;
+  vaultAddress: string;
 }
 
 export interface Trade {
