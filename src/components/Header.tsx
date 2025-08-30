@@ -9,6 +9,7 @@ interface HeaderProps {
   rightComponent?: React.ReactNode;
   className?: string;
   sticky?: boolean;
+  transparent?: boolean;
 }
 
 export function Header({
@@ -16,13 +17,16 @@ export function Header({
   centerComponent,
   rightComponent,
   sticky = true,
+  transparent = false,
   className,
 }: HeaderProps) {
   return (
     <div
       className={cn(
-        "flex items-center justify-between px-4 bg-white",
+        "flex items-center justify-between px-4",
+        transparent ? "bg-transparent" : "bg-white",
         sticky ? "sticky top-0 z-50" : "",
+        "pt-12 pb-6",
         className
       )}
     >

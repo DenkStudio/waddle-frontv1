@@ -272,7 +272,6 @@ export default function Vaults({ vaultAddress }: VaultsProps) {
           <h1 className="text-xl font-semibold text-gray-900">view vault</h1>
         }
         rightComponent={<SearchIcon size={56} />}
-        className="pt-12 pb-6"
       />
 
       <div className="flex-1 overflow-y-auto pb-52">
