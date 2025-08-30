@@ -316,7 +316,7 @@ export default function Vaults({ vaultAddress }: VaultsProps) {
             </span>
             <span className="px-4 py-2 bg-gray-900 text-white rounded-full text-sm font-medium">
               APR{" "}
-              <span className="text-green-500">
+              <span className="text-green-500 font-medium">
                 +{vaultDetails.data?.apr?.toFixed(1) || "0"}%
               </span>
             </span>

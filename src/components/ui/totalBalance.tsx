@@ -287,20 +287,30 @@ export function TotalBalance({
                 onClick={() => router.push(`/vault/${vault.vaultAddress}`)}
                 className="flex-shrink-0 w-20 text-center hover:opacity-80 transition-opacity"
               >
-                <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-2xl mb-2 mx-auto">
+                <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-2xl mb-2 mx-auto relative">
                   <Image
-                    width={64}
-                    height={64}
+                    width={480}
+                    height={480}
                     src={vault.src}
                     alt={vault.name}
-                    className="w-full h-full object-cover rounded-full"
+                    className="w-full h-full object-cover rounded-full "
+                  />
+                  <Image
+                    width={480}
+                    height={480}
+                    src="/fire-emoji.png"
+                    alt="fire"
+                    className="w-8 h-8 object-cover rounded-full absolute top-0 -right-4 z-10"
                   />
                 </div>
                 <p className="text-sm font-medium text-gray-900">
                   {vault.name}
                 </p>
                 <p className="text-xs text-gray-500 mt-1 bg-gray-100 rounded-full px-2 py-1">
-                  APR <span className="text-green-500">{vault.apr}</span>
+                  APR{" "}
+                  <span className="text-green-500 font-medium">
+                    {vault.apr}
+                  </span>
                 </p>
               </button>
             ))}
@@ -374,12 +384,7 @@ export function TotalBalance({
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
                   })}`}
-                  since={`All-time: ${allTimePnl >= 0 ? "+" : ""}$${Math.abs(
-                    allTimePnl
-                  ).toLocaleString(undefined, {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })}`}
+                  since={`3mo ago`}
                   onViewVault={() =>
                     router.push(
                       "/vault/0xfe63937e71b9ea1fb474eaf767664840188b7754"
@@ -411,10 +416,10 @@ export function TotalBalance({
           </div>
         )}
       </div>
-      
+
       {/* Padding to allow scrolling past bottom navigation */}
       <div className="h-24"></div>
-      
+
       <Deposit user={user} isOpen={isOpen} onClose={handleCloseDeposit} />
     </div>
   );
