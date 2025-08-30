@@ -19,7 +19,7 @@ export function Header({
   return (
     <div 
       className={cn(
-        "flex items-center justify-between px-4 py-3",
+        "flex items-center justify-between px-4",
         className
       )}
     >
