@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Button } from "./button";
-import InsidersClubCard from "../InsidersClubCard";
+import VaultCard from "./VaultCard";
 
 interface TrendingVault {
   name: string;
@@ -37,7 +37,6 @@ export function TotalBalance({
 
   return (
     <div className="px-6 space-y-6">
-      {/* Total Balance Section */}
       <div className="space-y-3">
         <p className="text-gray-500 text-base font-medium">Total balance</p>
         <div className="flex items-center justify-between">
@@ -77,9 +76,8 @@ export function TotalBalance({
       {/* Trending Section - Conditionally Rendered */}
       {showTrendingVaults && trendingVaults.length > 0 && (
         <div className="space-y-5">
-          <h2 className="text-xl font-semibold text-gray-900">
-            Trending vaults
-          </h2>
+          <h2 className="text-xl font-semibold text-gray-900">Holdings</h2>
+
           <div className="flex space-x-6 overflow-x-auto pb-2 scrollbar-hide">
             {trendingVaults.map((vault) => (
               <div key={vault.name} className="flex-shrink-0 w-20 text-center">
@@ -104,12 +102,10 @@ export function TotalBalance({
         </div>
       )}
 
-      {/* Only show separator if trending vaults are shown */}
       {showTrendingVaults && trendingVaults.length > 0 && (
         <div className="w-full h-px bg-gray-200"></div>
       )}
 
-      {/* Top Trades Section */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold text-gray-900">Holdings</h2>
@@ -122,7 +118,7 @@ export function TotalBalance({
         </div>
 
         {topTrades.map((trade) => (
-          <InsidersClubCard
+          <VaultCard
             key={trade.id}
             variant="light"
             title={trade.title}

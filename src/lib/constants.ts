@@ -1,6 +1,6 @@
 // Application constants and configuration
 
-import { CryptoToken } from "@/types";
+import { CryptoToken, Trade } from "@/types";
 
 export const APP_CONFIG = {
   name: "Waddle Front",
@@ -59,5 +59,48 @@ export const trendingVaults: CryptoToken[] = [
     apr: "100%",
     name: "Dogecoin2",
     src: "https://yt3.googleusercontent.com/ytc/AIdro_mir_9R_w9VCBNv2_PZnY3Q5fm5tkr8c0EXFTMaG9nPMA=s900-c-k-c0x00ffffff-no-rj",
+  },
+];
+
+export const topTrades: Trade[] = [
+  {
+    id: "1",
+    username: "@cryptowhale",
+    img: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1200px-Bitcoin.svg.png",
+    token: "$SOL",
+    type: "LONG",
+    leverage: "10x",
+    profit: "+$4,300",
+    timeAgo: "3min ago",
+  },
+  {
+    id: "2",
+    username: "@cryptowhale",
+    img: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1200px-Bitcoin.svg.png",
+    token: "$ETH",
+    type: "SHORT",
+    leverage: "5x",
+    profit: "+$2,150",
+    timeAgo: "15min ago",
+  },
+  {
+    id: "3",
+    username: "@cryptowhale",
+    img: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1200px-Bitcoin.svg.png",
+    token: "$BTC",
+    type: "LONG",
+    leverage: "8x",
+    profit: "+$6,800",
+    timeAgo: "1h ago",
+  },
+  {
+    id: "4",
+    username: "@cryptowhale",
+    img: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1200px-Bitcoin.svg.png",
+    token: "$LSK",
+    type: "LONG",
+    leverage: "30x",
+    profit: "+$108.9",
+    timeAgo: "2h ago",
   },
 ];

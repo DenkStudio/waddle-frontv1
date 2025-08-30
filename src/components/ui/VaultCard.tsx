@@ -2,9 +2,9 @@
 
 import React from "react";
 import Image from "next/image";
-import { Button } from "./ui/button";
+import { Button } from "./button";
 
-export interface InsidersClubCardProps {
+export interface VaultCardProps {
   title?: string;
   username?: string;
   liquidity?: string;
@@ -19,7 +19,7 @@ export interface InsidersClubCardProps {
   className?: string;
 }
 
-export default function InsidersClubCard({
+export default function VaultCard({
   title = "Insiders Club",
   username = "@cryptowhale",
   liquidity = "+$52m",
@@ -32,7 +32,7 @@ export default function InsidersClubCard({
   onViewVault,
   onShare,
   className = "",
-}: InsidersClubCardProps) {
+}: VaultCardProps) {
   if (variant === "light") {
     return (
       <div

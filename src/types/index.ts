@@ -75,7 +75,7 @@ export interface CryptoToken {
 export interface Trade {
   id: string;
   username: string;
-  avatar: string;
+  img: string;
   token: string;
   type: "LONG" | "SHORT";
   leverage: string;

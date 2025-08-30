@@ -9,7 +9,6 @@ import { SearchIcon } from "@/components/icons/SearchIcon";
 import { Trade } from "@/types";
 import { trendingVaults } from "@/lib/constants";
 import Image from "next/image";
-import InsidersClubCard from "@/components/InsidersClubCard";
 import { TotalBalance } from "@/components/ui/totalBalance";
 
 export default function Home() {
