@@ -25,7 +25,7 @@ export default function Vaults() {
   }
 
   return (
-    <div className="min-h-screen bg-white pb-20 px-4">
+    <div className="h-full bg-white overflow-hidden flex flex-col px-4">
       {/* Header */}
       <Header
         leftComponent={<ProfileAvatar size={56} />}
@@ -36,7 +36,8 @@ export default function Vaults() {
         className="pt-12 pb-6"
       />
 
-      <div className="bg-white rounded-2xl mb-6">
+      <div className="flex-1 overflow-y-auto">
+        <div className="bg-white rounded-2xl mb-6">
         {/* Profile Picture */}
         <div className="flex justify-center mb-4">
           <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center">
@@ -80,6 +81,7 @@ export default function Vaults() {
         {topTrades.map((trade) => (
           <TradeCard key={trade.id} trade={trade} />
         ))}
+        </div>
       </div>
 
       {/* Floating Action Buttons */}

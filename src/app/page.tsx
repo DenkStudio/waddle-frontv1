@@ -62,7 +62,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-white pb-20">
+    <div className="h-full bg-white overflow-hidden flex flex-col">
       {/* Header */}
       <Header
         leftComponent={
@@ -75,7 +75,9 @@ export default function Home() {
         className="pt-12 pb-6"
       />
 
-      <TotalBalance topTrades={topTrades} trendingVaults={trendingVaults} />
+      <div className="flex-1 overflow-y-auto">
+        <TotalBalance topTrades={topTrades} trendingVaults={trendingVaults} />
+      </div>
 
       {/* Settings Menu */}
       <SettingsMenu

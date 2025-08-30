@@ -47,7 +47,7 @@ export default function Holdings() {
   }
 
   return (
-    <div className="min-h-screen bg-white pb-20">
+    <div className="h-full bg-white overflow-hidden flex flex-col">
       {/* Header */}
       <Header
         leftComponent={<ProfileAvatar size={56} />}
@@ -58,11 +58,13 @@ export default function Holdings() {
         className="pt-12 pb-6"
       />
 
-      <TotalBalance
-        showTrendingVaults={false}
-        topTrades={topTrades}
-        trendingVaults={trendingVaults}
-      />
+      <div className="flex-1 overflow-y-auto">
+        <TotalBalance
+          showTrendingVaults={false}
+          topTrades={topTrades}
+          trendingVaults={trendingVaults}
+        />
+      </div>
     </div>
   );
 }

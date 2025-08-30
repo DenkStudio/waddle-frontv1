@@ -118,10 +118,10 @@ export default function RootLayout({
             }}
           />
         </head>
-        <body className="min-h-screen bg-background antialiased font-aeonik">
+        <body className="h-screen bg-background antialiased font-aeonik overflow-hidden">
           <ToastProvider>
-            <div className="relative flex min-h-screen flex-col">
-              <main className="flex-1">{children}</main>
+            <div className="relative flex h-screen flex-col overflow-hidden">
+              <main className="flex-1 overflow-hidden">{children}</main>
               {!hideBottomNav && <BottomNavigation isDark={false} />}
             </div>
           </ToastProvider>
