@@ -39,7 +39,7 @@ export default function LoginForm() {
   return (
     <div className="min-h-screen bg-white flex flex-col relative">
       {/* Video section at top */}
-      <div className="relative h-80">
+      <div className="relative h-[40vh]">
         <video
           autoPlay
           loop
@@ -58,26 +58,20 @@ export default function LoginForm() {
       </div>
 
       {/* Main content section */}
-      <div className="flex-1 bg-white flex flex-col items-center justify-center px-8 relative">
-        {/* App name - much closer to logo */}
-        <h1 className="text-[40px] font-light text-gray-900 mb-2 -mt-72 font-medium">
-          waddle
-        </h1>
+      <div className="flex justify-start items-between h-[50vh] bg-white flex-col px-8 ">
+        <div className="h-full flex flex-col items-center justify-start mt-16">
+          {/* App name - much closer to logo */}
+          <h1 className="text-[40px] font-light text-gray-900 mb-2  font-medium">
+            waddle
+          </h1>
 
-        {/* Subtitle */}
-        <p className="text-2xl text-gray-700 mb-16 text-center font-medium">
-          Sign in or create an account
-        </p>
+          {/* Subtitle */}
+          <p className="text-2xl text-gray-700  text-center font-medium">
+            Sign in or create an account
+          </p>
+        </div>
 
-        {/* Error message */}
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4 text-sm max-w-sm">
-            {error}
-          </div>
-        )}
-
-        {/* Start button at bottom */}
-        <div className="absolute bottom-8 left-4 right-4">
+        <div className="">
           <Button
             onClick={handlePrivyLogin}
             className="w-full bg-black hover:bg-gray-800 text-white py-4 rounded-full text-lg font-medium"
@@ -93,6 +87,13 @@ export default function LoginForm() {
             )}
           </Button>
         </div>
+
+        {/* Error message */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4 text-sm max-w-sm">
+            {error}
+          </div>
+        )}
       </div>
     </div>
   );

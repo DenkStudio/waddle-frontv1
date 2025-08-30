@@ -415,25 +415,9 @@ export default function Vaults({ vaultAddress }: VaultsProps) {
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600 mb-1">All-Time P&L</p>
-                    <p
-                      className={`text-lg font-semibold ${
-                        Number(userVaultPosition.data.allTimePnl) >= 0
-                          ? "text-green-600"
-                          : "text-red-600"
-                      }`}
-                    >
-                      {Number(userVaultPosition.data.allTimePnl) >= 0
-                        ? "+"
-                        : ""}
-                      $
-                      {Number(userVaultPosition.data.allTimePnl).toLocaleString(
-                        undefined,
-                        {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        }
-                      )}
+                    <p className="text-sm text-gray-600 mb-1">Time Following</p>
+                    <p className="text-lg font-semibold text-gray-900">
+                      {userVaultPosition.data.daysFollowing} days
                     </p>
                   </div>
                 </div>

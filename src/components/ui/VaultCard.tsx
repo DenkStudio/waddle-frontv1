@@ -78,8 +78,8 @@ export default function VaultCard({
                   <div className="h-full w-full rounded-full bg-gray-100"></div>
                 </div>
                 <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-purple-500 via-pink-500 to-orange-400 animate-ping opacity-20"></div>
-                <div className="relative h-12 w-12 rounded-full bg-lime-400 flex items-center justify-center m-1 hover:scale-105 transition-transform">
-                  <span className="text-black font-bold text-sm">(in)</span>
+                <div className="relative h-12 w-12 rounded-full bg-white flex items-center justify-center m-1 hover:scale-105 transition-transform">
+                  <span className="text-black font-bold text-2xl">🙏</span>
                 </div>
               </div>
               <div>
