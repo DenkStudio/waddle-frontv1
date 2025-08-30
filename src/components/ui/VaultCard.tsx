@@ -3,6 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import { Button } from "./button";
+import { useRouter } from "next/navigation";
 
 export interface VaultCardProps {
   title?: string;
@@ -33,6 +34,14 @@ export default function VaultCard({
   onShare,
   className = "",
 }: VaultCardProps) {
+  const router = useRouter();
+
+  const handleViewVault = () => {
+    router.push("/vault");
+    if (onViewVault) {
+      onViewVault();
+    }
+  };
   if (variant === "light") {
     return (
       <div
@@ -86,7 +95,7 @@ export default function VaultCard({
           <div className="flex items-center gap-3">
             <Button
               variant="gradient-blue"
-              onClick={onViewVault}
+              onClick={handleViewVault}
               className="flex-1 h-12 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold"
             >
               View vault
@@ -175,7 +184,7 @@ export default function VaultCard({
             <span className="pointer-events-none absolute -inset-x-6 -inset-y-2 rounded-[28px] bg-[radial-gradient(60%_120%_at_50%_100%,rgba(59,130,246,.55),transparent)] blur-2xl opacity-80" />
             <Button
               variant="gradient-blue"
-              onClick={onViewVault}
+              onClick={handleViewVault}
               className="w-full"
             >
               View vault

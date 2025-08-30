@@ -1,22 +1,161 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+
 import { Header } from "@/components/Header";
 import { ProfileAvatar } from "@/components/icons/ProfileAvatar";
 import { SearchIcon } from "@/components/icons/SearchIcon";
-import { Trade } from "@/types";
-import TradeCard from "./ui/TradeCard";
-import { topTrades } from "@/lib/constants";
+import { TradeCard } from "./TradeCard";
 import Image from "next/image";
+import { PublicClient, HttpTransport } from "@nktkas/hyperliquid";
+
+interface VaultFollower {
+  user: string;
+  vaultEquity: string;
+  pnl: string;
+  allTimePnl: string;
+  daysFollowing: number;
+  vaultEntryTime: number;
+  lockupUntil: number;
+}
+
+interface VaultData {
+  name: string;
+  vaultAddress: string;
+  leader: string;
+  description: string;
+  apr: number;
+  leaderCommission: number;
+  maxDistributable: number;
+  maxWithdrawable: number;
+  isClosed: boolean;
+  allowDeposits: boolean;
+  followers: VaultFollower[];
+}
+
+interface AssetPosition {
+  position: {
+    coin: string;
+    szi: string;
+    entryPx?: string;
+    positionValue: string;
+    unrealizedPnl: string;
+  };
+  leverage?: {
+    value: string;
+  };
+}
 
 export default function Vaults() {
-  const [isLoading] = useState(false);
-  const router = useRouter();
+  const [vaultDetails, setVaultDetails] = useState<{
+    loading: boolean;
+    data: VaultData | null;
+    error: string | null;
+  }>({
+    loading: false,
+    data: null,
+    error: null,
+  });
 
-  // Mock data for top trades
+  const [vaultPositions, setVaultPositions] = useState<{
+    loading: boolean;
+    data: AssetPosition[] | null;
+    error: string | null;
+  }>({
+    loading: false,
+    data: null,
+    error: null,
+  });
 
-  if (isLoading) {
+  const fetchVaultDetails = async (vaultAddress: string) => {
+    setVaultDetails({ loading: true, data: null, error: null });
+
+    try {
+      const transport = new HttpTransport({
+        url: "https://api.hyperliquid-testnet.xyz/info", // Using testnet for vault data
+      });
+      const client = new PublicClient({ transport });
+
+      // Fetch vault details
+      const details = await client.vaultDetails({
+        vaultAddress: vaultAddress as `0x${string}`,
+      });
+
+      if (details) {
+        setVaultDetails({
+          loading: false,
+          data: details,
+          error: null,
+        });
+      } else {
+        setVaultDetails({
+          loading: false,
+          data: null,
+          error: "Vault not found",
+        });
+      }
+    } catch (error) {
+      setVaultDetails({
+        loading: false,
+        data: null,
+        error: `Error fetching vault details: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`,
+      });
+    }
+  };
+
+  const fetchVaultPositions = async (vaultAddress: string) => {
+    setVaultPositions({ loading: true, data: null, error: null });
+
+    try {
+      const transport = new HttpTransport({
+        url: "https://api.hyperliquid-testnet.xyz/info", // Using testnet
+      });
+      const client = new PublicClient({ transport });
+
+      // Fetch vault's clearinghouse state to get open positions
+      const clearinghouseState = await client.clearinghouseState({
+        user: vaultAddress as `0x${string}`,
+      });
+
+      if (clearinghouseState && clearinghouseState.assetPositions) {
+        // Filter out positions with zero size
+        const openPositions = clearinghouseState.assetPositions.filter(
+          (position) => parseFloat(position.position.szi) !== 0
+        );
+
+        setVaultPositions({
+          loading: false,
+          data: openPositions,
+          error: null,
+        });
+      } else {
+        setVaultPositions({
+          loading: false,
+          data: [],
+          error: null,
+        });
+      }
+    } catch (error) {
+      setVaultPositions({
+        loading: false,
+        data: null,
+        error: `Error fetching vault positions: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`,
+      });
+    }
+  };
+
+  // Fetch vault details and positions on component mount
+  useEffect(() => {
+    const testnetVaultAddress = "0xfe63937e71b9ea1fb474eaf767664840188b7754";
+    fetchVaultDetails(testnetVaultAddress);
+    fetchVaultPositions(testnetVaultAddress);
+  }, []);
+
+  if (vaultDetails.loading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
@@ -49,21 +188,39 @@ export default function Vaults() {
         {/* Name and Handle */}
         <div className="text-center mb-6">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            Insiders Club
+            {vaultDetails.data?.name || "Loading..."}
           </h2>
-          <p className="text-blue-600 text-lg">@cryptowhale.eth</p>
+          <p className="text-blue-600 text-lg">
+            {vaultDetails.data?.leader
+              ? `${vaultDetails.data.leader.slice(0, 8)}...`
+              : "Loading..."}
+          </p>
         </div>
+
+        {/* Error State */}
+        {vaultDetails.error && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+            <p className="text-red-700 text-sm">{vaultDetails.error}</p>
+          </div>
+        )}
 
         {/* Stats Labels */}
         <div className="flex flex-wrap gap-3 justify-center mb-6">
           <span className="px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
-            TVL $596m
+            TVL $
+            {vaultDetails.data?.maxDistributable
+              ? (vaultDetails.data.maxDistributable / 1000000).toFixed(1)
+              : "0"}
+            m
           </span>
           <span className="px-4 py-2 bg-gray-900 text-white rounded-full text-sm font-medium">
-            APR <span className="text-green-500">+12.5%</span>
+            APR{" "}
+            <span className="text-green-500">
+              +{vaultDetails.data?.apr?.toFixed(1) || "0"}%
+            </span>
           </span>
           <span className="px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
-            4mo ago
+            {vaultDetails.data?.followers?.length || 0} followers
           </span>
         </div>
 
@@ -71,16 +228,69 @@ export default function Vaults() {
 
         {/* Active Trades Section */}
         <div className="text-start mb-6">
-          <p className="text-gray-700 font-medium text-xl">Active trades</p>
+          <p className="text-gray-700 font-medium text-xl">Active positions</p>
         </div>
       </div>
 
-      {/* Trade Cards */}
-      <div className="space-y-4">
-        {topTrades.map((trade) => (
-          <TradeCard key={trade.id} trade={trade} />
-        ))}
-      </div>
+      {/* Positions Loading State */}
+      {vaultPositions.loading && (
+        <div className="flex items-center justify-center py-8">
+          <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          <span className="ml-2 text-gray-600">Loading positions...</span>
+        </div>
+      )}
+
+      {/* Positions Error State */}
+      {vaultPositions.error && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+          <p className="text-red-700 text-sm">{vaultPositions.error}</p>
+        </div>
+      )}
+
+      {/* No Positions State */}
+      {vaultPositions.data && vaultPositions.data.length === 0 && (
+        <div className="text-center py-8">
+          <p className="text-gray-500">No active positions in this vault</p>
+        </div>
+      )}
+
+      {/* Real Position Cards */}
+      {vaultPositions.data && vaultPositions.data.length > 0 && (
+        <div className="space-y-4">
+          {vaultPositions.data.map((position, index) => {
+            const szi = parseFloat(position.position.szi);
+            const entryPx = parseFloat(position.position.entryPx || "0");
+            const positionValue = parseFloat(position.position.positionValue);
+            const unrealizedPnl = parseFloat(position.position.unrealizedPnl);
+            const leverage = position.leverage?.value
+              ? parseFloat(position.leverage.value)
+              : 0;
+            const isLong = szi > 0;
+
+            const markPx = Math.abs(positionValue) / Math.abs(szi);
+
+            return (
+              <TradeCard
+                key={`position-${index}`}
+                username={vaultDetails.data?.name || "Vault Strategy"}
+                avatar="🏛️"
+                token={position.position.coin}
+                type={isLong ? "LONG" : "SHORT"}
+                leverage={leverage > 0 ? `${leverage.toFixed(0)}x` : "Cross"}
+                profit={`${unrealizedPnl >= 0 ? "+" : ""}$${Math.abs(
+                  unrealizedPnl
+                ).toLocaleString(undefined, {
+                  minimumFractionDigits: 1,
+                  maximumFractionDigits: 1,
+                })}`}
+                timeAgo="Live"
+                entryPrice={entryPx.toFixed(3)}
+                markPrice={markPx.toFixed(3)}
+              />
+            );
+          })}
+        </div>
+      )}
 
       {/* Floating Action Buttons */}
       <div className="fixed bottom-32 left-4 right-4 flex items-center gap-4 z-50">
