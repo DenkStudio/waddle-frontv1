@@ -1,9 +1,9 @@
 import * as React from "react"
-const CustomShortsIcon = ({isActive, isDark, width = 35, height = 30}: {isActive: boolean, isDark: boolean, width?: number, height?: number}) => (
+const CustomShortsIcon = ({isActive, isDark}: {isActive: boolean, isDark: boolean}) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width={width}
-    height={height}
+    width={35}
+    height={30}
     fill="none"
   >
     <path

@@ -175,21 +175,4 @@
   .container {
     @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;
   }
-
-  /* Subtle bounce animation for nav icons */
-  @keyframes bounce-subtle {
-
-    0%,
-    100% {
-      transform: translateY(0) scale(1);
-    }
-
-    50% {
-      transform: translateY(-2px) scale(1.05);
-    }
-  }
-
-  .animate-bounce-subtle {
-    animation: bounce-subtle 0.3s ease-in-out;
-  }
 }

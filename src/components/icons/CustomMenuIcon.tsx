@@ -4,15 +4,13 @@ import { cn } from "@/lib/utils";
 interface IconProps {
   isActive: boolean;
   isDark: boolean;
-  width?: number;
-  height?: number;
 }
 
-const CustomMenuIcon = ({ isActive, isDark, width = 24, height = 24 }: IconProps) => (
+const CustomMenuIcon = ({ isActive, isDark }: IconProps) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width={width}
-    height={height}
+    width={24}
+    height={24}
     fill="none"
     viewBox="0 0 24 24"
   >
