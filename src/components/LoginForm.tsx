@@ -58,7 +58,7 @@ export default function LoginForm() {
       </div>
 
       {/* Main content section */}
-      <div className="flex justify-start items-between h-[60vh] bg-white flex-col px-8 pb-10">
+      <div className="flex justify-start items-between h-[50vh] bg-white flex-col px-8 ">
         <div className="h-full flex flex-col items-center justify-start mt-16">
           {/* App name - much closer to logo */}
           <h1 className="text-[40px] font-light text-gray-900 mb-2  font-medium">
