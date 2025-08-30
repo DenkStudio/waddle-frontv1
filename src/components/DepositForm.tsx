@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 interface DepositProps {
   user?: {
@@ -11,21 +12,80 @@ interface DepositProps {
       address: string;
     };
   } | null;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
-export function Deposit({ user }: DepositProps) {
+export function Deposit({ user, isOpen, onClose }: DepositProps) {
   const [paymentMethod, setPaymentMethod] = useState<"credit" | "wallet">(
     user?.wallet ? "wallet" : "credit"
   );
   const [amount, setAmount] = useState("");
-  const [isSoundEnabled, setIsSoundEnabled] = useState(true);
   const { addToast } = useToast();
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [depositSuccess, setDepositSuccess] = useState(false);
+
+  // Add drawer state and refs
+  const [isClosing, setIsClosing] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [translateY, setTranslateY] = useState(0);
+  const drawerRef = useRef<HTMLDivElement>(null);
+  const startY = useRef(0);
+  const currentY = useRef(0);
+
+  // Handle touch start
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setIsDragging(true);
+    startY.current = e.touches[0].clientY;
+    currentY.current = e.touches[0].clientY;
+  };
+
+  // Handle touch move
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging) return;
+
+    currentY.current = e.touches[0].clientY;
+    const deltaY = currentY.current - startY.current;
+
+    if (deltaY > 0) {
+      // Only allow downward drag
+      setTranslateY(deltaY);
+    }
+  };
+
+  // Handle touch end
+  const handleTouchEnd = () => {
+    if (!isDragging) return;
+
+    setIsDragging(false);
+    const deltaY = currentY.current - startY.current;
+
+    if (deltaY > 100) {
+      // Close if dragged down more than 100px
+      closeDrawer();
+    } else {
+      setTranslateY(0); // Reset position
+    }
+  };
+
+  // Close drawer function
+  const closeDrawer = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      onClose();
+      setIsClosing(false);
+      setTranslateY(0); // Reset position for next open
+    }, 300); // Match the transition duration
+  };
+
+  // If drawer is closed, don't render
+  if (!isOpen) {
+    return null;
+  }
 
   const handleKeypadInput = (value: string) => {
     if (value === "backspace") {
       setAmount((prev) => prev.slice(0, -1));
-    } else if (value === "sound") {
-      setIsSoundEnabled((prev) => !prev);
     } else {
       // Only allow numbers and decimal point
       if (/^[0-9.]$/.test(value)) {
@@ -48,9 +108,6 @@ export function Deposit({ user }: DepositProps) {
     if (isNaN(num)) return "0.00";
     return num.toFixed(2);
   };
-
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [depositSuccess, setDepositSuccess] = useState(false);
 
   const handleDeposit = async () => {
     if (!amount || parseFloat(amount) <= 0) return;
@@ -101,8 +158,27 @@ export function Deposit({ user }: DepositProps) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-3xl w-full max-w-sm mx-auto overflow-hidden">
+    <div
+      className={`fixed inset-0 bg-black/50 flex items-end justify-center z-50 p-4 transition-opacity duration-300 ${
+        isClosing ? "opacity-0" : "opacity-100"
+      }`}
+    >
+      <div
+        ref={drawerRef}
+        className="bg-white rounded-t-3xl w-full max-w-sm mx-auto overflow-hidden transform transition-all duration-300 ease-out min-h-[85vh]"
+        style={{
+          transform: `translateY(${isClosing ? "100%" : translateY}px)`,
+          transition: isDragging ? "none" : "all 0.3s ease-out",
+        }}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
+        {/* Drag handle */}
+        <div className="flex justify-center pt-3 pb-2 cursor-grab active:cursor-grabbing">
+          <div className="w-12 h-1 bg-gray-300 rounded-full"></div>
+        </div>
+
         <div className="px-6 py-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-semibold text-gray-900">
@@ -118,14 +194,14 @@ export function Deposit({ user }: DepositProps) {
                 className={cn(
                   "flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-full text-sm font-medium transition-all",
                   paymentMethod === "wallet"
-                    ? "bg-purple-600 text-white shadow-sm"
+                    ? "bg-[hsl(var(--color-waddle-blue))] hover:bg-[hsl(var(--color-waddle-blue-hover))] text-white shadow-sm"
                     : "text-gray-600 hover:text-gray-900"
                 )}
               >
                 Crypto Transfer
                 {paymentMethod === "wallet" && (
                   <div className="w-4 h-4 bg-white rounded-full flex items-center justify-center">
-                    <div className="w-2 h-2 bg-purple-600 rounded-full" />
+                    <div className="w-2 h-2 bg-[hsl(var(--color-waddle-blue))] rounded-full" />
                   </div>
                 )}
               </button>
@@ -178,7 +254,7 @@ export function Deposit({ user }: DepositProps) {
                         duration: 3000,
                       });
                     }}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-full transition-colors"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-[hsl(var(--color-waddle-blue))] hover:bg-[hsl(var(--color-waddle-blue-hover))] text-white text-sm font-medium rounded-full transition-colors"
                   >
                     <svg
                       className="w-4 h-4"
@@ -200,14 +276,13 @@ export function Deposit({ user }: DepositProps) {
 
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                 <div className="flex items-start gap-3">
-                  <div className="w-5 h-5 text-yellow-600 mt-0.5">
-                    <svg fill="currentColor" viewBox="0 0 20 20">
-                      <path
-                        fillRule="evenodd"
-                        d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
+                  <div className="w-12 h-12 text-yellow-600 mt-0.5">
+                    <Image
+                      src="logos/warning.svg"
+                      alt="warning"
+                      width={48}
+                      height={48}
+                    />
                   </div>
                   <div>
                     <p className="text-sm font-medium text-yellow-800">
@@ -226,8 +301,42 @@ export function Deposit({ user }: DepositProps) {
             <>
               <div className="text-center mb-6">
                 <p className="text-gray-500 text-sm mb-2">Amount</p>
-                <div className="text-6xl font-light text-gray-300">
+                <div
+                  className={`text-6xl font-light ${
+                    amount && parseFloat(amount) > 0
+                      ? "text-gray-900"
+                      : "text-gray-300"
+                  }`}
+                >
                   ${formatDisplayAmount(amount)}
+                </div>
+
+                {/* Dollar amount chips */}
+                <div className="flex justify-center gap-3 mt-4">
+                  <button
+                    onClick={() => setAmount("10")}
+                    className="px-4 py-2 bg-gray-100 hover:bg-gray-300 text-gray-900 rounded-full text-sm font-medium transition-colors"
+                  >
+                    $10
+                  </button>
+                  <button
+                    onClick={() => setAmount("50")}
+                    className="px-4 py-2 bg-gray-100 hover:bg-gray-300 text-gray-900 rounded-full text-sm font-medium transition-colors"
+                  >
+                    $50
+                  </button>
+                  <button
+                    onClick={() => setAmount("100")}
+                    className="px-4 py-2 bg-gray-100 hover:bg-gray-300 text-gray-900 rounded-full text-sm font-medium transition-colors"
+                  >
+                    $100
+                  </button>
+                  <button
+                    onClick={() => setAmount("500")}
+                    className="px-4 py-2 bg-gray-100 hover:bg-gray-300 text-gray-900 rounded-full text-sm font-medium transition-colors"
+                  >
+                    $500
+                  </button>
                 </div>
               </div>
             </>
@@ -267,49 +376,41 @@ export function Deposit({ user }: DepositProps) {
             <div className="grid grid-cols-3 gap-4">
               <KeypadButton
                 value="1"
-                label="ABC"
                 onClick={handleKeypadInput}
                 disabled={isProcessing}
               />
               <KeypadButton
                 value="2"
-                label="DEF"
                 onClick={handleKeypadInput}
                 disabled={isProcessing}
               />
               <KeypadButton
                 value="3"
-                label="GHI"
                 onClick={handleKeypadInput}
                 disabled={isProcessing}
               />
               <KeypadButton
                 value="4"
-                label="JKL"
                 onClick={handleKeypadInput}
                 disabled={isProcessing}
               />
               <KeypadButton
                 value="5"
-                label="MNO"
                 onClick={handleKeypadInput}
                 disabled={isProcessing}
               />
               <KeypadButton
                 value="6"
-                label="PQRS"
                 onClick={handleKeypadInput}
                 disabled={isProcessing}
               />
               <KeypadButton
                 value="7"
-                label="TUV"
                 onClick={handleKeypadInput}
                 disabled={isProcessing}
               />
               <KeypadButton
                 value="8"
-                label="WXYZ"
                 onClick={handleKeypadInput}
                 disabled={isProcessing}
               />
@@ -342,50 +443,6 @@ export function Deposit({ user }: DepositProps) {
                     d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z"
                   />
                 </svg>
-              </button>
-            </div>
-
-            {/* Sound Toggle */}
-            <div className="flex justify-center mt-6">
-              <button
-                onClick={() => handleKeypadInput("sound")}
-                className="flex items-center justify-center w-16 h-16 rounded-full bg-gray-200 hover:bg-gray-300 transition-colors"
-              >
-                {isSoundEnabled ? (
-                  <svg
-                    className="w-8 h-8 text-gray-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"
-                    />
-                  </svg>
-                ) : (
-                  <svg
-                    className="w-8 h-8 text-gray-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"
-                    />
-                  </svg>
-                )}
               </button>
             </div>
           </div>

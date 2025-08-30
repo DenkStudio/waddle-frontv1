@@ -6,6 +6,8 @@ import { Button } from "./button";
 import VaultCard from "./VaultCard";
 import { usePrivy } from "@privy-io/react-auth";
 import { useToast } from "./toast";
+import { Deposit } from "../DepositForm";
+import { useState } from "react";
 
 interface TrendingVault {
   name: string;
@@ -38,6 +40,7 @@ export function TotalBalance({
   const router = useRouter();
   const { user } = usePrivy();
   const { addToast } = useToast();
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleCopyAddress = () => {
     if (user?.wallet?.address) {
@@ -50,6 +53,14 @@ export function TotalBalance({
     }
   };
 
+  const handleOpenDeposit = () => {
+    setIsOpen(true);
+  };
+
+  const handleCloseDeposit = () => {
+    setIsOpen(false);
+  };
+
   return (
     <div className="px-6 space-y-6">
       <div className="space-y-1">
@@ -60,7 +71,7 @@ export function TotalBalance({
             <span className="text-4xl font-bold text-gray-900">{balance}</span>
           </div>
           <button
-            onClick={() => router.push("/deposit")}
+            onClick={handleOpenDeposit}
             className="w-12 h-12 rounded-full bg-gray-100 hover:bg-gray-200 border-0 shadow-none flex items-center justify-center transition-all duration-200 active:scale-95"
             style={{
               WebkitTapHighlightColor: "transparent",
@@ -176,6 +187,7 @@ export function TotalBalance({
           />
         ))}
       </div>
+      <Deposit user={user} isOpen={isOpen} onClose={handleCloseDeposit} />
     </div>
   );
 }
