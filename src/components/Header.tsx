@@ -26,7 +26,7 @@ export function Header({
         "flex items-center justify-between px-4",
         transparent ? "bg-transparent" : "bg-white",
         sticky ? "sticky top-0 z-50" : "",
-        "pt-12 pb-6",
+        "pt-6 pb-6",
         className
       )}
     >
