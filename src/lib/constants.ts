@@ -47,7 +47,7 @@ export const ANIMATION_DURATIONS = {
 export const trendingVaults: CryptoToken[] = [
   {
     apr: "1.1%",
-    name: "Money Burner",
+    name: "Money Burn",
     src: "/images/vault1.png",
     vaultAddress: "0x9221d0087d0b59c4dd6347ee9d6d35601b9b39ea",
   },
@@ -59,7 +59,7 @@ export const trendingVaults: CryptoToken[] = [
   },
   {
     apr: "0.4%",
-    name: "Kagman's Grid",
+    name: "Kang Grid",
     src: "/images/vault3.png",
     vaultAddress: "0xe9b89e63ac37d080a988e7464ee0e362870a022e",
   },

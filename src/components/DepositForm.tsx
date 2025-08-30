@@ -165,7 +165,7 @@ export function Deposit({ user, isOpen, onClose }: DepositProps) {
     >
       <div
         ref={drawerRef}
-        className="bg-white rounded-t-3xl w-full max-w-sm mx-auto overflow-hidden transform transition-all duration-300 ease-out min-h-[85vh]"
+        className="bg-white rounded-t-3xl w-full max-w-sm mx-auto overflow-hidden transform transition-all duration-300 ease-out min-h-[90vh]"
         style={{
           transform: `translateY(${isClosing ? "100%" : translateY}px)`,
           transition: isDragging ? "none" : "all 0.3s ease-out",
@@ -181,9 +181,28 @@ export function Deposit({ user, isOpen, onClose }: DepositProps) {
 
         <div className="px-6 py-6">
           <div className="flex justify-between items-center mb-6">
+            <button
+              onClick={closeDrawer}
+              className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors"
+            >
+              <svg
+                className="w-5 h-5 text-gray-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
             <h2 className="text-xl font-semibold text-gray-900">
               Deposit Funds
             </h2>
+            <div className="w-8 h-8"></div> {/* Spacer for centering */}
           </div>
         </div>
         <div className="px-6 pb-6">

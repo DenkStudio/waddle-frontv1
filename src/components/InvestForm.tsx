@@ -108,6 +108,11 @@ export function Invest({ user, isOpen, onClose }: InvestProps) {
     return num.toFixed(2);
   };
 
+  const getAmountTextColor = (value: string) => {
+    if (!value || parseFloat(value) === 0) return "text-gray-300";
+    return "text-gray-900";
+  };
+
   const investInVault = async (vaultAddress: string, amount: string) => {
     if (!user?.wallet?.address) {
       addToast({
@@ -237,7 +242,7 @@ export function Invest({ user, isOpen, onClose }: InvestProps) {
     >
       <div
         ref={drawerRef}
-        className="bg-white rounded-t-3xl w-full max-w-sm mx-auto overflow-hidden transform transition-all duration-300 ease-out min-h-[85vh]"
+        className="bg-white rounded-t-3xl w-full max-w-sm mx-auto overflow-hidden transform transition-all duration-300 ease-out min-h-[90vh]"
         style={{
           transform: `translateY(${isClosing ? "100%" : translateY}px)`,
           transition: isDragging ? "none" : "all 0.3s ease-out",
@@ -290,7 +295,9 @@ export function Invest({ user, isOpen, onClose }: InvestProps) {
 
           <div className="text-center mb-6">
             <p className="text-gray-500 text-sm mb-2">Amount</p>
-            <div className="text-6xl font-light text-gray-300">
+            <div
+              className={`text-6xl font-light ${getAmountTextColor(amount)}`}
+            >
               ${formatDisplayAmount(amount)}
             </div>
 
@@ -325,7 +332,7 @@ export function Invest({ user, isOpen, onClose }: InvestProps) {
 
           <Button
             onClick={handleInvest}
-            className="w-full bg-gray-400 hover:bg-gray-500 text-white font-medium py-4 rounded-full text-lg mb-6"
+            className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium py-4 rounded-full text-lg"
             disabled={!amount || parseFloat(amount) <= 0 || isProcessing}
           >
             {isProcessing ? (
