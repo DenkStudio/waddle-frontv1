@@ -33,6 +33,14 @@ export default function Home() {
       invested: "$1,200",
       since: "3min ago",
     },
+    {
+      id: "2",
+      title: "ETH Short Play",
+      username: "@defi_master",
+      earnings: "+$2,850",
+      invested: "$800",
+      since: "15min ago",
+    },
   ];
 
   // Show loading while Privy is initializing

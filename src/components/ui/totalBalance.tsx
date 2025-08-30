@@ -13,7 +13,7 @@ interface TrendingVault {
   apr: string;
 }
 
-interface TopTrade {
+export interface TopTrade {
   id: string;
   title: string;
   username: string;
@@ -162,19 +162,21 @@ export function TotalBalance({
           </Button>
         </div>
 
-        {topTrades.map((trade) => (
-          <VaultCard
-            key={trade.id}
-            variant="light"
-            title={trade.title}
-            username={trade.username}
-            earnings={trade.earnings}
-            invested={trade.invested}
-            since={trade.since}
-            onViewVault={() => {}}
-            onShare={() => {}}
-          />
-        ))}
+        <div className="space-y-4">
+          {topTrades.map((trade) => (
+            <VaultCard
+              key={trade.id}
+              variant="light"
+              title={trade.title}
+              username={trade.username}
+              earnings={trade.earnings}
+              invested={trade.invested}
+              since={trade.since}
+              onViewVault={() => {}}
+              onShare={() => {}}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
