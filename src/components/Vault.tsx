@@ -272,10 +272,9 @@ export default function Vaults({ vaultAddress }: VaultsProps) {
           <h1 className="text-xl font-semibold text-gray-900">view vault</h1>
         }
         rightComponent={<SearchIcon size={56} />}
-        className="pt-12 pb-6"
       />
 
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto pb-52">
         <div className="bg-white rounded-2xl mb-3">
           {/* Profile Picture */}
           <div className="flex justify-center mb-4">
@@ -327,105 +326,81 @@ export default function Vaults({ vaultAddress }: VaultsProps) {
 
           <div className="w-full h-px bg-gray-200 my-4"></div>
 
-          {/* User's Vault Position */}
-          {user?.wallet?.address && (
+          {/* User's Vault Position - Only show if user has a position */}
+          {user?.wallet?.address && userVaultPosition.data && (
             <div className="mb-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
                 Your Position
               </h3>
 
-              {userVaultPosition.loading && (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-                    <p className="text-blue-700">Loading your position...</p>
-                  </div>
-                </div>
-              )}
-
-              {userVaultPosition.error && (
-                <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                  <p className="text-gray-600 text-sm text-center">
-                    {userVaultPosition.error ===
-                    "No position found in this vault"
-                      ? "You're not following this vault yet"
-                      : userVaultPosition.error}
-                  </p>
-                  <p className="text-xs text-gray-500 text-center mt-2">
-                    Click &quot;Invest&quot; below to join this vault
-                  </p>
-                </div>
-              )}
-
-              {userVaultPosition.data && (
-                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-3">
-                      <span>✅</span>
-                      <span className="text-sm font-medium text-green-800">
-                        You&apos;re following this vault
-                      </span>
-                    </div>
-                    <span className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full">
-                      {userVaultPosition.data.daysFollowing} days
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <span>✅</span>
+                    <span className="text-sm font-medium text-green-800">
+                      You&apos;re following this vault
                     </span>
                   </div>
-                  <div className="grid grid-cols-3 gap-4 text-center">
-                    <div>
-                      <p className="text-sm text-gray-600 mb-1">Your Equity</p>
-                      <p className="text-lg font-semibold text-gray-900">
-                        $
-                        {Number(
-                          userVaultPosition.data.vaultEquity
-                        ).toLocaleString(undefined, {
+                  <span className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full">
+                    {userVaultPosition.data.daysFollowing} days
+                  </span>
+                </div>
+                <div className="grid grid-cols-3 gap-4 text-center">
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Your Equity</p>
+                    <p className="text-lg font-semibold text-gray-900">
+                      $
+                      {Number(
+                        userVaultPosition.data.vaultEquity
+                      ).toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Current P&L</p>
+                    <p
+                      className={`text-lg font-semibold ${
+                        Number(userVaultPosition.data.pnl) >= 0
+                          ? "text-green-600"
+                          : "text-red-600"
+                      }`}
+                    >
+                      {Number(userVaultPosition.data.pnl) >= 0 ? "+" : ""}$
+                      {Number(userVaultPosition.data.pnl).toLocaleString(
+                        undefined,
+                        {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2,
-                        })}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-600 mb-1">Current P&L</p>
-                      <p
-                        className={`text-lg font-semibold ${
-                          Number(userVaultPosition.data.pnl) >= 0
-                            ? "text-green-600"
-                            : "text-red-600"
-                        }`}
-                      >
-                        {Number(userVaultPosition.data.pnl) >= 0 ? "+" : ""}$
-                        {Number(userVaultPosition.data.pnl).toLocaleString(
-                          undefined,
-                          {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          }
-                        )}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-600 mb-1">All-Time P&L</p>
-                      <p
-                        className={`text-lg font-semibold ${
-                          Number(userVaultPosition.data.allTimePnl) >= 0
-                            ? "text-green-600"
-                            : "text-red-600"
-                        }`}
-                      >
-                        {Number(userVaultPosition.data.allTimePnl) >= 0
-                          ? "+"
-                          : ""}
-                        $
-                        {Number(
-                          userVaultPosition.data.allTimePnl
-                        ).toLocaleString(undefined, {
+                        }
+                      )}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">All-Time P&L</p>
+                    <p
+                      className={`text-lg font-semibold ${
+                        Number(userVaultPosition.data.allTimePnl) >= 0
+                          ? "text-green-600"
+                          : "text-red-600"
+                      }`}
+                    >
+                      {Number(userVaultPosition.data.allTimePnl) >= 0
+                        ? "+"
+                        : ""}
+                      $
+                      {Number(userVaultPosition.data.allTimePnl).toLocaleString(
+                        undefined,
+                        {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2,
-                        })}
-                      </p>
-                    </div>
+                        }
+                      )}
+                    </p>
                   </div>
                 </div>
-              )}
+              </div>
 
               <div className="w-full h-px bg-gray-200 my-4"></div>
             </div>

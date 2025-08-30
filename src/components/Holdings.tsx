@@ -36,7 +36,6 @@ export default function Holdings() {
           <h1 className="text-xl font-semibold text-gray-900">Explore</h1>
         }
         rightComponent={<SearchIcon size={56} />}
-        className="pt-12 pb-6"
       />
 
       <div className="flex-1 overflow-y-auto">

@@ -14,8 +14,8 @@ export default function RootLayout({
 }) {
   const pathname = usePathname();
 
-  // Don't show bottom navigation on login page
-  const hideBottomNav = pathname === "/login";
+  // Don't show bottom navigation on login page and chat pages
+  const hideBottomNav = pathname === "/login" || pathname.startsWith("/chat");
   const darkRoutes = ["/feed", "/another-dark-page"];
   const isDarkNavigation = darkRoutes.includes(pathname);
 
