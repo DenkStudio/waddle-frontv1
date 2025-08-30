@@ -1,21 +1,17 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/toast";
 import {
   Card,
   CardContent,
 } from "@/components/ui/card";
+import { Header } from "@/components/Header";
+import { ProfileAvatar } from "@/components/icons/ProfileAvatar";
+import { SearchIcon } from "@/components/icons/SearchIcon";
 
-interface User {
-  id: string;
-  email: string;
-  name: string;
-  balance: number;
-  loginMethod: string;
-}
+
 
 interface CryptoToken {
   symbol: string;
@@ -37,10 +33,8 @@ interface Trade {
 }
 
 export default function Home() {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading] = useState(false);
   const router = useRouter();
-  const { addToast } = useToast();
 
   // Mock data for trending tokens
   const trendingTokens: CryptoToken[] = [
@@ -85,31 +79,17 @@ export default function Home() {
     );
   }
 
-  if (!user) return null;
+
 
   return (
     <div className="min-h-screen bg-white pb-20">
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-4 pt-12">
-        <div className="relative">
-          <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
-            <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707" />
-            </svg>
-          </div>
-          <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
-            <span className="text-xs text-white font-medium">3</span>
-          </div>
-        </div>
-        
-        <h1 className="text-xl font-semibold text-gray-900">Explore</h1>
-        
-        <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
-          <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-        </div>
-      </div>
+      <Header
+        leftComponent={<ProfileAvatar size={56} />}
+        centerComponent={<h1 className="text-xl font-semibold text-gray-900">Explore</h1>}
+        rightComponent={<SearchIcon size={56} />}
+        className="pt-12 pb-4"
+      />
 
       <div className="px-6 space-y-8">
         {/* Total Balance Section */}
@@ -148,7 +128,7 @@ export default function Home() {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-semibold text-gray-900">Top trades</h2>
-            <Button variant="outline" size="sm" className="text-blue-500 border-blue-500">
+            <Button size="sm" className="text-blue-500 border border-blue-500 bg-transparent hover:bg-blue-50">
               View all →
             </Button>
           </div>
