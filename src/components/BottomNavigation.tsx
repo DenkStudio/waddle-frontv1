@@ -32,7 +32,7 @@ export function BottomNavigation({ isDark = false }: BottomNavigationProps) {
     },
     {
       id: "shorts",
-      path: "/shorts",
+      path: "/feed",
       isCenter: true,
       icon: (isActive, isDark) => (
         <CustomShortsIcon isActive={isActive} isDark={isDark} />
@@ -40,7 +40,7 @@ export function BottomNavigation({ isDark = false }: BottomNavigationProps) {
     },
     {
       id: "share",
-      path: "/share",
+      path: "/holdings",
       icon: (isActive, isDark) => (
         <CustomShareIcon isActive={isActive} isDark={isDark} />
       ),
