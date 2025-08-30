@@ -47,6 +47,22 @@ export function TotalBalance({
   const [balanceLoading, setBalanceLoading] = useState<boolean>(false);
   const [balanceError, setBalanceError] = useState<string | null>(null);
 
+  const [userVaultPositions, setUserVaultPositions] = useState<{
+    loading: boolean;
+    data: Array<{
+      vaultAddress: string;
+      vaultName: string;
+      vaultEquity: string;
+      pnl: string;
+      allTimePnl: string;
+    }> | null;
+    error: string | null;
+  }>({
+    loading: false,
+    data: null,
+    error: null,
+  });
+
   const fetchUsdcBalance = async (walletAddress: string) => {
     setBalanceLoading(true);
     setBalanceError(null);
@@ -80,13 +96,82 @@ export function TotalBalance({
     }
   };
 
-  // Fetch balance when user wallet is available
+  const fetchUserVaultPositions = async (userAddress: string) => {
+    setUserVaultPositions({ loading: true, data: null, error: null });
+
+    try {
+      const transport = new HttpTransport({
+        url: "https://api.hyperliquid-testnet.xyz/info", // Using testnet
+      });
+      const client = new PublicClient({ transport });
+
+      // List of known vaults to check (you can expand this list)
+      const knownVaults = [
+        "0xfe63937e71b9ea1fb474eaf767664840188b7754", // Your main vault
+        // Add more vault addresses here if needed
+      ];
+
+      const vaultPositions = [];
+
+      for (const vaultAddress of knownVaults) {
+        try {
+          // Fetch vault details to get vault name and follower information
+          const vaultDetails = await client.vaultDetails({
+            vaultAddress: vaultAddress as `0x${string}`,
+          });
+
+          if (vaultDetails) {
+            // Find the user's position in the followers array
+            const userPosition = vaultDetails.followers.find(
+              (follower) =>
+                follower.user.toLowerCase() === userAddress.toLowerCase()
+            );
+
+            if (userPosition) {
+              vaultPositions.push({
+                vaultAddress,
+                vaultName: vaultDetails.name,
+                vaultEquity: userPosition.vaultEquity,
+                pnl: userPosition.pnl,
+                allTimePnl: userPosition.allTimePnl,
+              });
+            }
+          }
+        } catch (error) {
+          console.error(`Error fetching vault ${vaultAddress}:`, error);
+          // Continue with other vaults even if one fails
+        }
+      }
+
+      setUserVaultPositions({
+        loading: false,
+        data: vaultPositions,
+        error: null,
+      });
+    } catch (error) {
+      setUserVaultPositions({
+        loading: false,
+        data: null,
+        error: `Error fetching vault positions: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`,
+      });
+    }
+  };
+
+  // Fetch balance and vault positions when user wallet is available
   useEffect(() => {
     if (user?.wallet?.address) {
+      // Set loading states immediately
+      setBalanceLoading(true);
+      setUserVaultPositions({ loading: true, data: null, error: null });
+
       fetchUsdcBalance(user.wallet.address);
+      fetchUserVaultPositions(user.wallet.address);
     } else {
       setUsdcBalance("...");
       setBalanceError(null);
+      setUserVaultPositions({ loading: false, data: null, error: null });
     }
   }, [user?.wallet?.address]);
 
@@ -233,21 +318,89 @@ export function TotalBalance({
           </Button>
         </div>
 
-        <div className="space-y-4">
-          {topTrades.map((trade) => (
-            <VaultCard
-              key={trade.id}
-              variant="light"
-              title={trade.title}
-              username={trade.username}
-              earnings={trade.earnings}
-              invested={trade.invested}
-              since={trade.since}
-              onViewVault={() => {}}
-              onShare={() => {}}
-            />
-          ))}
-        </div>
+        {/* Vault Positions Loading State */}
+        {userVaultPositions.loading && (
+          <div className="flex items-center justify-center py-8">
+            <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+            <span className="ml-2 text-gray-600">
+              Loading your vault positions...
+            </span>
+          </div>
+        )}
+
+        {/* Vault Positions Error State */}
+        {userVaultPositions.error && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <p className="text-red-700 text-sm">{userVaultPositions.error}</p>
+          </div>
+        )}
+
+        {/* No Vault Positions */}
+        {userVaultPositions.data && userVaultPositions.data.length === 0 && (
+          <div className="text-center py-8">
+            <p className="text-gray-500">No vault positions found</p>
+            <p className="text-sm text-gray-400 mt-1">
+              Invest in a vault to see your holdings here
+            </p>
+          </div>
+        )}
+
+        {/* Real Vault Position Cards */}
+        {userVaultPositions.data && userVaultPositions.data.length > 0 && (
+          <div className="space-y-4">
+            {userVaultPositions.data.map((position, index) => {
+              const equity = parseFloat(position.vaultEquity);
+              const pnl = parseFloat(position.pnl);
+              const allTimePnl = parseFloat(position.allTimePnl);
+
+              return (
+                <VaultCard
+                  key={`vault-${index}`}
+                  variant="light"
+                  title={position.vaultName}
+                  username={`${position.vaultAddress.slice(0, 8)}...`}
+                  earnings={`${pnl >= 0 ? "+" : ""}$${Math.abs(
+                    pnl
+                  ).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}`}
+                  invested={`$${equity.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}`}
+                  since={`All-time: ${allTimePnl >= 0 ? "+" : ""}$${Math.abs(
+                    allTimePnl
+                  ).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}`}
+                  onViewVault={() => router.push("/vault")}
+                  onShare={() => {}}
+                />
+              );
+            })}
+          </div>
+        )}
+
+        {/* Fallback to mock data if no user or no vault positions */}
+        {!user?.wallet?.address && topTrades.length > 0 && (
+          <div className="space-y-4">
+            {topTrades.map((trade) => (
+              <VaultCard
+                key={trade.id}
+                variant="light"
+                title={trade.title}
+                username={trade.username}
+                earnings={trade.earnings}
+                invested={trade.invested}
+                since={trade.since}
+                onViewVault={() => {}}
+                onShare={() => {}}
+              />
+            ))}
+          </div>
+        )}
       </div>
       
       {/* Padding to allow scrolling past bottom navigation */}
