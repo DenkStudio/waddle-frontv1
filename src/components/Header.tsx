@@ -8,15 +8,13 @@ interface HeaderProps {
   centerComponent?: React.ReactNode;
   rightComponent?: React.ReactNode;
   className?: string;
-  isDark?: boolean;
 }
 
 export function Header({ 
   leftComponent, 
   centerComponent, 
   rightComponent, 
-  className,
-  isDark = false 
+  className
 }: HeaderProps) {
   return (
     <div 
