@@ -8,6 +8,8 @@ import { SearchIcon } from "@/components/icons/SearchIcon";
 import { TradeCard } from "./TradeCard";
 import Image from "next/image";
 import { PublicClient, HttpTransport } from "@nktkas/hyperliquid";
+import { Invest } from "./InvestForm";
+import { usePrivy } from "@privy-io/react-auth";
 import { SettingsMenu } from "@/components/SettingsMenu";
 
 interface VaultFollower {
@@ -48,6 +50,8 @@ interface AssetPosition {
 }
 
 export default function Vaults() {
+  const { user } = usePrivy();
+  const [isInvestOpen, setIsInvestOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   const [vaultDetails, setVaultDetails] = useState<{
@@ -303,7 +307,10 @@ export default function Vaults() {
         {/* Floating Action Buttons */}
         <div className="fixed bottom-32 left-4 right-4 flex items-center gap-4 z-50">
           {/* Large Green Invest Button */}
-          <button className="flex-1 bg-green-500 text-white font-semibold py-4 px-6 rounded-full text-lg shadow-lg hover:bg-green-600 transition-colors">
+          <button
+            onClick={() => setIsInvestOpen(true)}
+            className="flex-1 bg-green-500 text-white font-semibold py-4 px-6 rounded-full text-lg shadow-lg hover:bg-green-600 transition-colors"
+          >
             Invest
           </button>
 
@@ -320,6 +327,13 @@ export default function Vaults() {
             </div>
           </div>
         </div>
+
+        {/* Invest Modal */}
+        <Invest
+          user={user}
+          isOpen={isInvestOpen}
+          onClose={() => setIsInvestOpen(false)}
+        />
 
         {/* Settings Menu */}
         <SettingsMenu
