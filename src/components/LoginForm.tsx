@@ -16,26 +16,29 @@ export default function LoginForm() {
   const mockLogin = async (method: string) => {
     setIsLoading(true);
     setError("");
-    
+
     // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+
     // Mock validation - allow any email/password or social login
     if (method === "email" && (!email || !password)) {
       setError("Please enter both email and password");
       setIsLoading(false);
       return;
     }
-    
+
     // Simulate successful login
-    localStorage.setItem("waddle_user", JSON.stringify({
-      id: "user_123",
-      email: email || "user@example.com",
-      name: "John Doe",
-      balance: 1250.50,
-      loginMethod: method
-    }));
-    
+    localStorage.setItem(
+      "waddle_user",
+      JSON.stringify({
+        id: "user_123",
+        email: email || "user@example.com",
+        name: "John Doe",
+        balance: 1250.5,
+        loginMethod: method,
+      })
+    );
+
     setIsLoading(false);
     router.push("/");
   };
@@ -72,8 +75,8 @@ export default function LoginForm() {
 
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white via-white/90 to-transparent z-10"></div>
 
-        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 z-20 w-32 h-32 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-          <span className="text-white text-4xl font-bold">W</span>
+        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 z-20  flex items-center justify-center">
+          <Image src="/logos/logo.svg" alt="Logo" width={150} height={150} />
         </div>
       </div>
       <div className="flex-1 bg-white px-4 py-8">
@@ -121,9 +124,12 @@ export default function LoginForm() {
               variant="black"
               disabled={isLoading}
               leftIcon={
-                <div className="w-5 h-5 bg-white rounded-sm flex items-center justify-center">
-                  <span className="text-black text-xs font-bold">🍎</span>
-                </div>
+                <Image
+                  src="/logos/apple.svg"
+                  alt="Apple"
+                  width={20}
+                  height={20}
+                />
               }
             >
               {isLoading ? "Signing in..." : "Continue with Apple"}
@@ -134,9 +140,12 @@ export default function LoginForm() {
               variant="gray"
               disabled={isLoading}
               leftIcon={
-                <div className="w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center">
-                  <span className="text-white text-xs font-bold">M</span>
-                </div>
+                <Image
+                  src="/logos/metamask.svg"
+                  alt="Metamask"
+                  width={20}
+                  height={20}
+                />
               }
             >
               {isLoading ? "Connecting..." : "Continue with Metamask"}
@@ -147,18 +156,21 @@ export default function LoginForm() {
               variant="gray"
               disabled={isLoading}
               leftIcon={
-                <div className="w-5 h-5 bg-gradient-to-r from-red-500 via-yellow-500 to-blue-500 rounded-full flex items-center justify-center">
-                  <span className="text-white text-xs font-bold">G</span>
-                </div>
+                <Image
+                  src="/logos/google.svg"
+                  alt="Google"
+                  width={20}
+                  height={20}
+                />
               }
             >
               {isLoading ? "Signing in..." : "Continue with Google"}
             </Button>
           </div>
 
-          <Button 
-            onClick={handleSubmit} 
-            variant="blue" 
+          <Button
+            onClick={handleSubmit}
+            variant="blue"
             className="w-full"
             disabled={isLoading}
           >

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/toast";
 import {
   Card,
   CardContent,
@@ -39,6 +40,7 @@ export default function Home() {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+  const { addToast } = useToast();
 
   // Mock data for trending tokens
   const trendingTokens: CryptoToken[] = [
@@ -62,18 +64,18 @@ export default function Home() {
     }
   ];
 
-  useEffect(() => {
-    // Check if user is logged in
-    const userData = localStorage.getItem("waddle_user");
-    if (!userData) {
-      router.push("/login");
-      return;
-    }
+  // useEffect(() => {
+  //   // Check if user is logged in
+  //   const userData = localStorage.getItem("waddle_user");
+  //   if (!userData) {
+  //     router.push("/login");
+  //     return;
+  //   }
 
-    const parsedUser = JSON.parse(userData);
-    setUser(parsedUser);
-    setIsLoading(false);
-  }, [router]);
+  //   const parsedUser = JSON.parse(userData);
+  //   setUser(parsedUser);
+  //   setIsLoading(false);
+  // }, [router]);
 
   if (isLoading) {
     return (

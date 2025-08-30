@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 
 interface DepositModalProps {
@@ -15,6 +16,7 @@ export function DepositModal({ isOpen, onClose }: DepositModalProps) {
   );
   const [amount, setAmount] = useState("");
   const [isSoundEnabled, setIsSoundEnabled] = useState(true);
+  const { addToast } = useToast();
 
   const presetAmounts = [10, 50, 100, 500];
 
@@ -50,10 +52,53 @@ export function DepositModal({ isOpen, onClose }: DepositModalProps) {
     return num.toFixed(2);
   };
 
-  const handleDeposit = () => {
-    // Handle deposit logic here
-    console.log("Deposit:", { amount, paymentMethod });
-    onClose();
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [depositSuccess, setDepositSuccess] = useState(false);
+
+  const handleDeposit = async () => {
+    if (!amount || parseFloat(amount) <= 0) return;
+
+    setIsProcessing(true);
+
+    try {
+      // Simulate processing delay
+      await new Promise((resolve) => setTimeout(resolve, 2500));
+
+      // Update user balance in localStorage
+      const userData = localStorage.getItem("waddle_user");
+      if (userData) {
+        const user = JSON.parse(userData);
+        user.balance += parseFloat(amount);
+        localStorage.setItem("waddle_user", JSON.stringify(user));
+      }
+
+      setIsProcessing(false);
+      setDepositSuccess(true);
+
+      // Show success toast
+      addToast({
+        type: "success",
+        message: `Successfully deposited $${parseFloat(amount).toFixed(
+          2
+        )} via ${paymentMethod === "credit" ? "Credit Card" : "USDT"}`,
+        duration: 4000,
+      });
+
+      // Auto close after success
+      setTimeout(() => {
+        setDepositSuccess(false);
+        onClose();
+        // Refresh the page to show updated balance
+        window.location.reload();
+      }, 2000);
+    } catch {
+      setIsProcessing(false);
+      addToast({
+        type: "error",
+        message: "Deposit failed. Please try again.",
+        duration: 5000,
+      });
+    }
   };
 
   if (!isOpen) return null;
@@ -61,6 +106,36 @@ export function DepositModal({ isOpen, onClose }: DepositModalProps) {
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-3xl w-full max-w-sm mx-auto overflow-hidden">
+        <div className="px-6 py-6">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-semibold text-gray-900">
+              Deposit Funds
+            </h2>
+            <button
+              onClick={isProcessing ? undefined : onClose}
+              className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
+                isProcessing
+                  ? "text-gray-300 cursor-not-allowed"
+                  : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+              }`}
+              disabled={isProcessing}
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
         <div className="px-6 pb-6">
           <div className="flex bg-gray-100 rounded-full p-1">
             <button
@@ -127,28 +202,95 @@ export function DepositModal({ isOpen, onClose }: DepositModalProps) {
           <Button
             onClick={handleDeposit}
             className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium py-4 rounded-full text-lg"
-            disabled={!amount || parseFloat(amount) <= 0}
+            disabled={!amount || parseFloat(amount) <= 0 || isProcessing}
           >
-            Deposit
+            {isProcessing ? (
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                Processing...
+              </div>
+            ) : depositSuccess ? (
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
+                  <span className="text-white text-xs">✓</span>
+                </div>
+                Success!
+              </div>
+            ) : (
+              "Deposit"
+            )}
           </Button>
         </div>
 
-        <div className="bg-gray-50 p-6">
+        <div
+          className={`bg-gray-50 p-6 ${
+            isProcessing ? "opacity-50 pointer-events-none" : ""
+          }`}
+        >
           <div className="grid grid-cols-3 gap-4">
-            <KeypadButton value="1" label="ABC" onClick={handleKeypadInput} />
-            <KeypadButton value="2" label="DEF" onClick={handleKeypadInput} />
-            <KeypadButton value="3" label="GHI" onClick={handleKeypadInput} />
-            <KeypadButton value="4" label="JKL" onClick={handleKeypadInput} />
-            <KeypadButton value="5" label="MNO" onClick={handleKeypadInput} />
-            <KeypadButton value="6" label="PQRS" onClick={handleKeypadInput} />
-            <KeypadButton value="7" label="TUV" onClick={handleKeypadInput} />
-            <KeypadButton value="8" label="WXYZ" onClick={handleKeypadInput} />
-            <KeypadButton value="9" onClick={handleKeypadInput} />
+            <KeypadButton
+              value="1"
+              label="ABC"
+              onClick={handleKeypadInput}
+              disabled={isProcessing}
+            />
+            <KeypadButton
+              value="2"
+              label="DEF"
+              onClick={handleKeypadInput}
+              disabled={isProcessing}
+            />
+            <KeypadButton
+              value="3"
+              label="GHI"
+              onClick={handleKeypadInput}
+              disabled={isProcessing}
+            />
+            <KeypadButton
+              value="4"
+              label="JKL"
+              onClick={handleKeypadInput}
+              disabled={isProcessing}
+            />
+            <KeypadButton
+              value="5"
+              label="MNO"
+              onClick={handleKeypadInput}
+              disabled={isProcessing}
+            />
+            <KeypadButton
+              value="6"
+              label="PQRS"
+              onClick={handleKeypadInput}
+              disabled={isProcessing}
+            />
+            <KeypadButton
+              value="7"
+              label="TUV"
+              onClick={handleKeypadInput}
+              disabled={isProcessing}
+            />
+            <KeypadButton
+              value="8"
+              label="WXYZ"
+              onClick={handleKeypadInput}
+              disabled={isProcessing}
+            />
+            <KeypadButton
+              value="9"
+              onClick={handleKeypadInput}
+              disabled={isProcessing}
+            />
             <div />
-            <KeypadButton value="0" onClick={handleKeypadInput} />
+            <KeypadButton
+              value="0"
+              onClick={handleKeypadInput}
+              disabled={isProcessing}
+            />
             <button
               onClick={() => handleKeypadInput("backspace")}
-              className="h-16 flex items-center justify-center text-gray-600 hover:text-gray-900 transition-colors"
+              className="h-16 flex items-center justify-center text-gray-600 hover:text-gray-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={isProcessing}
             >
               <svg
                 className="w-6 h-6"
@@ -219,13 +361,17 @@ interface KeypadButtonProps {
   value: string;
   label?: string;
   onClick: (value: string) => void;
+  disabled?: boolean;
 }
 
-function KeypadButton({ value, label, onClick }: KeypadButtonProps) {
+function KeypadButton({ value, label, onClick, disabled }: KeypadButtonProps) {
   return (
     <button
-      onClick={() => onClick(value)}
-      className="h-16 flex flex-col items-center justify-center text-gray-900 hover:bg-gray-200 rounded-lg transition-colors"
+      onClick={() => !disabled && onClick(value)}
+      className={`h-16 flex flex-col items-center justify-center text-gray-900 rounded-lg transition-colors ${
+        disabled ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-200"
+      }`}
+      disabled={disabled}
     >
       <span className="text-2xl font-light">{value}</span>
       {label && <span className="text-xs text-gray-500 mt-1">{label}</span>}

@@ -1,7 +1,11 @@
 "use client";
 
+import React from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import CustomMenuIcon from "./icons/CustomMenuIcon";
+import CustomShareIcon from "./icons/CustomShareIcon";
+import CustomShortsIcon from "./icons/CustomShortsIcon";
 
 interface BottomNavigationProps {
   isDark?: boolean;
@@ -9,9 +13,9 @@ interface BottomNavigationProps {
 
 interface NavItem {
   id: string;
-  label: string;
-  icon: (isActive: boolean, isDark: boolean) => JSX.Element;
+  icon: (isActive: boolean, isDark: boolean, width: number, height: number) => React.ReactElement;
   path: string;
+  isCenter?: boolean;
 }
 
 export function BottomNavigation({ isDark = false }: BottomNavigationProps) {
@@ -20,110 +24,20 @@ export function BottomNavigation({ isDark = false }: BottomNavigationProps) {
 
   const navItems: NavItem[] = [
     {
-      id: "home",
-      label: "Home",
-      path: "/",
-      icon: (isActive, isDark) => (
-        <svg 
-          className={cn(
-            "w-6 h-6",
-            isActive 
-              ? (isDark ? "text-blue-400" : "text-blue-500") 
-              : (isDark ? "text-gray-400" : "text-gray-500")
-          )} 
-          fill={isActive ? "currentColor" : "none"} 
-          stroke="currentColor" 
-          viewBox="0 0 24 24"
-        >
-          <path 
-            strokeLinecap="round" 
-            strokeLinejoin="round" 
-            strokeWidth={isActive ? 0 : 2} 
-            d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"
-          />
-          <path 
-            strokeLinecap="round" 
-            strokeLinejoin="round" 
-            strokeWidth={isActive ? 0 : 2} 
-            d="M8 21V9a2 2 0 012-2h4a2 2 0 012 2v12"
-          />
-        </svg>
-      ),
+      id: "menu",
+      path: "/menu",
+      icon: (isActive, isDark, width, height) => <CustomMenuIcon isActive={isActive} isDark={isDark} width={width} height={height} />,
     },
     {
-      id: "portfolio",
-      label: "Portfolio", 
-      path: "/portfolio",
-      icon: (isActive, isDark) => (
-        <svg 
-          className={cn(
-            "w-6 h-6",
-            isActive 
-              ? (isDark ? "text-blue-400" : "text-blue-500") 
-              : (isDark ? "text-gray-400" : "text-gray-500")
-          )} 
-          fill={isActive ? "currentColor" : "none"} 
-          stroke="currentColor" 
-          viewBox="0 0 24 24"
-        >
-          <path 
-            strokeLinecap="round" 
-            strokeLinejoin="round" 
-            strokeWidth={isActive ? 0 : 2} 
-            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-          />
-        </svg>
-      ),
+      id: "shorts",
+      path: "/shorts",
+      isCenter: true,
+      icon: (isActive, isDark, width, height) => <CustomShortsIcon isActive={isActive} isDark={isDark} width={width} height={height} />,
     },
     {
-      id: "trades",
-      label: "Trades",
-      path: "/trades", 
-      icon: (isActive, isDark) => (
-        <svg 
-          className={cn(
-            "w-6 h-6",
-            isActive 
-              ? (isDark ? "text-blue-400" : "text-blue-500") 
-              : (isDark ? "text-gray-400" : "text-gray-500")
-          )} 
-          fill={isActive ? "currentColor" : "none"} 
-          stroke="currentColor" 
-          viewBox="0 0 24 24"
-        >
-          <path 
-            strokeLinecap="round" 
-            strokeLinejoin="round" 
-            strokeWidth={isActive ? 0 : 2} 
-            d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-          />
-        </svg>
-      ),
-    },
-    {
-      id: "profile",
-      label: "Profile",
-      path: "/profile",
-      icon: (isActive, isDark) => (
-        <svg 
-          className={cn(
-            "w-6 h-6",
-            isActive 
-              ? (isDark ? "text-blue-400" : "text-blue-500") 
-              : (isDark ? "text-gray-400" : "text-gray-500")
-          )} 
-          fill={isActive ? "currentColor" : "none"} 
-          stroke="currentColor" 
-          viewBox="0 0 24 24"
-        >
-          <path 
-            strokeLinecap="round" 
-            strokeLinejoin="round" 
-            strokeWidth={isActive ? 0 : 2} 
-            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-          />
-        </svg>
-      ),
+      id: "share",
+      path: "/share",
+      icon: (isActive, isDark, width, height) => <CustomShareIcon isActive={isActive} isDark={isDark} width={width} height={height} />,
     },
   ];
 
@@ -140,41 +54,47 @@ export function BottomNavigation({ isDark = false }: BottomNavigationProps) {
           : "bg-white/95 border-gray-200"
       )}
     >
-      <div className="flex items-center justify-around px-6 py-2 h-16 max-w-md mx-auto">
+      <div className="flex items-center justify-center gap-12 px-8 py-4 max-w-md mx-auto">
         {navItems.map((item) => {
           const isActive = pathname === item.path;
           
+          if (item.isCenter) {
+            return (
+              <div
+                key={item.id}
+                onClick={() => handleNavigation(item.path)}
+                className={cn(
+                  "w-16 h-16 rounded-full flex items-center justify-center cursor-pointer",
+                  "transition-all duration-200 transform active:animate-bounce-subtle",
+                  "hover:scale-105 active:scale-95",
+                  isActive 
+                    ? "bg-blue-500 hover:bg-blue-600" 
+                    : (isDark 
+                        ? "bg-gray-800 hover:bg-gray-700" 
+                        : "bg-gray-100 hover:bg-gray-200")
+                )}
+              >
+                {item.icon(isActive, isDark, 35, 30)}
+              </div>
+            );
+          }
+          
+          // Small icons - 48x48
           return (
-            <button
+            <div
               key={item.id}
               onClick={() => handleNavigation(item.path)}
               className={cn(
-                "flex flex-col items-center justify-center p-2 min-w-[60px] transition-colors",
-                "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 rounded-lg"
+                "w-12 h-12 rounded-full flex items-center justify-center cursor-pointer",
+                "transition-all duration-200 transform active:animate-bounce-subtle",
+                "hover:scale-110 active:scale-90",
+                isDark 
+                  ? "bg-gray-800 hover:bg-gray-700" 
+                  : "bg-gray-100 hover:bg-gray-200"
               )}
             >
-              <div className="mb-1">
-                {item.icon(isActive, isDark)}
-              </div>
-              <span 
-                className={cn(
-                  "text-xs font-medium",
-                  isActive 
-                    ? (isDark ? "text-blue-400" : "text-blue-500") 
-                    : (isDark ? "text-gray-400" : "text-gray-500")
-                )}
-              >
-                {item.label}
-              </span>
-              {isActive && (
-                <div 
-                  className={cn(
-                    "w-4 h-0.5 rounded-full mt-1",
-                    isDark ? "bg-blue-400" : "bg-blue-500"
-                  )}
-                />
-              )}
-            </button>
+              {item.icon(isActive, isDark, 24, 24)}
+            </div>
           );
         })}
       </div>
