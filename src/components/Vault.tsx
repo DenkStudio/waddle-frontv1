@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 import { Header } from "@/components/Header";
 import { ProfileAvatar } from "@/components/icons/ProfileAvatar";
@@ -55,6 +56,7 @@ interface VaultsProps {
 
 export default function Vaults({ vaultAddress }: VaultsProps) {
   const { user } = usePrivy();
+  const router = useRouter();
   const [isInvestOpen, setIsInvestOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
@@ -266,12 +268,47 @@ export default function Vaults({ vaultAddress }: VaultsProps) {
       {/* Header */}
       <Header
         leftComponent={
-          <ProfileAvatar size={56} onClick={() => setIsSettingsOpen(true)} />
+          <button className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors">
+            <svg
+              className="w-5 h-5 text-gray-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+          </button>
         }
         centerComponent={
-          <h1 className="text-xl font-semibold text-gray-900">view vault</h1>
+          <div className="text-center">
+            <p className="text-sm text-gray-500 font-medium">View vault</p>
+          </div>
         }
-        rightComponent={<SearchIcon size={56} />}
+        rightComponent={
+          <button
+            onClick={() => setIsSettingsOpen(true)}
+            className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors"
+          >
+            <svg
+              className="w-5 h-5 text-gray-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
+              />
+            </svg>
+          </button>
+        }
       />
 
       <div className="flex-1 overflow-y-auto pb-52">
@@ -485,7 +522,14 @@ export default function Vaults({ vaultAddress }: VaultsProps) {
           </button>
 
           <div className="relative">
-            <button className="w-16 h-16 bg-black rounded-full flex items-center justify-center shadow-lg hover:bg-gray-800 transition-colors">
+            <button
+              onClick={() => {
+                const targetVaultAddress =
+                  vaultAddress || "0xfe63937e71b9ea1fb474eaf767664840188b7754";
+                router.push(`/chat/${targetVaultAddress}`);
+              }}
+              className="w-16 h-16 bg-black rounded-full flex items-center justify-center shadow-lg hover:bg-gray-800 transition-colors"
+            >
               <Image src="/logos/chat.svg" alt="chat" width={24} height={24} />
             </button>
 
