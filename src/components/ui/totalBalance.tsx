@@ -402,6 +402,10 @@ export function TotalBalance({
           </div>
         )}
       </div>
+      
+      {/* Padding to allow scrolling past bottom navigation */}
+      <div className="h-24"></div>
+      
       <Deposit user={user} isOpen={isOpen} onClose={handleCloseDeposit} />
     </div>
   );
