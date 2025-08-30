@@ -7,12 +7,13 @@ import { ProfileAvatar } from "@/components/icons/ProfileAvatar";
 import { SearchIcon } from "@/components/icons/SearchIcon";
 import { trendingVaults } from "@/lib/constants";
 import { TotalBalance } from "@/components/ui/totalBalance";
-import { usePrivy, useWallets } from "@privy-io/react-auth";
+import { usePrivy } from "@privy-io/react-auth";
+import { SettingsMenu } from "@/components/SettingsMenu";
 
 export default function Home() {
-  const { ready, authenticated, user } = usePrivy();
-  const { wallets } = useWallets();
+  const { ready, authenticated } = usePrivy();
   const [isLoading] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const router = useRouter();
 
   // Redirect to login if not authenticated
@@ -56,7 +57,9 @@ export default function Home() {
     <div className="min-h-screen bg-white pb-20">
       {/* Header */}
       <Header
-        leftComponent={<ProfileAvatar size={56} />}
+        leftComponent={
+          <ProfileAvatar size={56} onClick={() => setIsSettingsOpen(true)} />
+        }
         centerComponent={
           <h1 className="text-xl font-semibold text-gray-900">Explore</h1>
         }
@@ -65,6 +68,12 @@ export default function Home() {
       />
 
       <TotalBalance topTrades={topTrades} trendingVaults={trendingVaults} />
+
+      {/* Settings Menu */}
+      <SettingsMenu
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+      />
     </div>
   );
 }

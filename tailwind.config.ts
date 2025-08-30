@@ -24,21 +24,21 @@ const config: Config = {
         ring: "hsl(var(--color-ring))",
         background: "hsl(var(--color-background))",
         foreground: "hsl(var(--color-foreground))",
-        
+
         // Primary brand colors
         primary: {
           DEFAULT: "hsl(var(--color-primary))",
           foreground: "hsl(var(--color-primary-foreground))",
           hover: "hsl(var(--color-primary-hover))",
         },
-        
+
         // Secondary colors
         secondary: {
           DEFAULT: "hsl(var(--color-secondary))",
           foreground: "hsl(var(--color-secondary-foreground))",
           hover: "hsl(var(--color-secondary-hover))",
         },
-        
+
         // Status colors
         destructive: {
           DEFAULT: "hsl(var(--color-destructive))",
@@ -52,7 +52,7 @@ const config: Config = {
           DEFAULT: "hsl(var(--color-warning))",
           foreground: "hsl(var(--color-warning-foreground))",
         },
-        
+
         // Neutral colors
         muted: {
           DEFAULT: "hsl(var(--color-muted))",
@@ -62,7 +62,7 @@ const config: Config = {
           DEFAULT: "hsl(var(--color-accent))",
           foreground: "hsl(var(--color-accent-foreground))",
         },
-        
+
         // Component colors
         popover: {
           DEFAULT: "hsl(var(--color-popover))",
@@ -72,19 +72,19 @@ const config: Config = {
           DEFAULT: "hsl(var(--color-card))",
           foreground: "hsl(var(--color-card-foreground))",
         },
-        
+
         // Brand specific colors
         waddle: {
           blue: "hsl(var(--color-waddle-blue))",
           "blue-hover": "hsl(var(--color-waddle-blue-hover))",
         },
-        
+
         // Social brand colors
         apple: "hsl(var(--color-apple))",
         google: "hsl(var(--color-google))",
         metamask: "hsl(var(--color-metamask))",
       },
-      
+
       // === BORDER RADIUS ===
       borderRadius: {
         lg: "var(--radius-lg)",
@@ -92,7 +92,7 @@ const config: Config = {
         sm: "var(--radius-sm)",
         full: "var(--radius-full)",
       },
-      
+
       // === TYPOGRAPHY ===
       fontFamily: {
         sans: ["var(--font-aeonik)", "system-ui", "sans-serif"],
@@ -105,22 +105,22 @@ const config: Config = {
         xl: "var(--font-size-xl)",
         "2xl": "var(--font-size-2xl)",
       },
-      
+
       // === COMPONENT HEIGHTS ===
       height: {
         "button-sm": "var(--height-button-sm)",
         "button-default": "var(--height-button-default)",
         "button-lg": "var(--height-button-lg)",
-        "input": "var(--height-input)",
+        input: "var(--height-input)",
       },
-      
+
       // === TRANSITIONS ===
       transitionDuration: {
         fast: "var(--transition-fast)",
         normal: "var(--transition-normal)",
         slow: "var(--transition-slow)",
       },
-      
+
       // === ANIMATIONS ===
       keyframes: {
         "accordion-down": {
@@ -131,10 +131,15 @@ const config: Config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        "slide-up": {
+          from: { transform: "translateY(100%)" },
+          to: { transform: "translateY(0)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "slide-up": "slide-up 0.3s ease-out",
       },
     },
   },

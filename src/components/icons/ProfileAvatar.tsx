@@ -6,26 +6,29 @@ interface ProfileAvatarProps {
   size?: number;
   className?: string;
   badgeCount?: number;
+  onClick?: () => void;
 }
 
-export function ProfileAvatar({ 
-  size = 56, 
+export function ProfileAvatar({
+  size = 56,
   className,
-  badgeCount 
+  badgeCount,
+  onClick,
 }: ProfileAvatarProps) {
   return (
     <div className="relative">
-      <div 
+      <div
         className={cn(
           "rounded-full flex items-center justify-center border-2 border-gray-200 cursor-pointer transition-all duration-200 active:scale-95 overflow-hidden",
           className
         )}
         style={{ width: size, height: size }}
+        onClick={onClick}
       >
-        <Image 
-          src="/images/profile.png" 
-          alt="Profile" 
-          width={size} 
+        <Image
+          src="/images/profile.png"
+          alt="Profile"
+          width={size}
           height={size}
           className="rounded-full object-cover"
         />
