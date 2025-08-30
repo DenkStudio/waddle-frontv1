@@ -5,12 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 
-interface DepositModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-export function DepositModal({ isOpen, onClose }: DepositModalProps) {
+export function Deposit() {
   const [paymentMethod, setPaymentMethod] = useState<"credit" | "usdt">(
     "credit"
   );
@@ -84,11 +79,12 @@ export function DepositModal({ isOpen, onClose }: DepositModalProps) {
         duration: 4000,
       });
 
+      // Reset amount to 0
+      setAmount("");
+
       // Auto close after success
       setTimeout(() => {
-        setDepositSuccess(false);
-        onClose();
-        // Refresh the page to show updated balance
+        setDepositSuccess(false); // Refresh the page to show updated balance
         window.location.reload();
       }, 2000);
     } catch {
@@ -101,8 +97,6 @@ export function DepositModal({ isOpen, onClose }: DepositModalProps) {
     }
   };
 
-  if (!isOpen) return null;
-
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-3xl w-full max-w-sm mx-auto overflow-hidden">
@@ -111,29 +105,6 @@ export function DepositModal({ isOpen, onClose }: DepositModalProps) {
             <h2 className="text-xl font-semibold text-gray-900">
               Deposit Funds
             </h2>
-            <button
-              onClick={isProcessing ? undefined : onClose}
-              className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
-                isProcessing
-                  ? "text-gray-300 cursor-not-allowed"
-                  : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
-              }`}
-              disabled={isProcessing}
-            >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
           </div>
         </div>
         <div className="px-6 pb-6">

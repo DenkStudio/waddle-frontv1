@@ -70,7 +70,7 @@ export default function LoginForm() {
           playsInline
           className="absolute inset-0 w-full h-full object-cover z-0"
         >
-          <source src="/login.mp4" type="video/mp4" />
+          <source src="/videos/demo-trader-video.mp4" type="video/mp4" />
         </video>
 
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white via-white/90 to-transparent z-10"></div>

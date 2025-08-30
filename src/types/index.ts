@@ -36,3 +36,32 @@ export interface NavItem {
   icon?: React.ComponentType<{ className?: string }>
   children?: NavItem[]
 }
+
+// Video feed types
+export interface Video {
+  id: string
+  url: string
+  thumbnail?: string
+  title: string
+  description?: string
+  author: {
+    id: string
+    name: string
+    avatar: string
+    verified?: boolean
+  }
+  likes: number
+  comments: number
+  shares: number
+  views: number
+  duration: number
+  createdAt: string
+  tags?: string[]
+}
+
+export interface VideoFeedProps {
+  videos: Video[]
+  onVideoEnd?: (videoId: string) => void
+  onVideoPlay?: (videoId: string) => void
+  onVideoPause?: (videoId: string) => void
+}
