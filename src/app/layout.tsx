@@ -4,6 +4,7 @@ import { aeonik } from "../lib/fonts";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { usePathname } from "next/navigation";
 import { ToastProvider } from "@/components/ui/toast";
+import { Providers } from "./providers";
 import "./globals.css";
 
 export default function RootLayout({
@@ -12,51 +13,71 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  
+
   // Don't show bottom navigation on login page
   const hideBottomNav = pathname === "/login";
 
   return (
-    <html lang="en" className={`${aeonik.variable}`}>
-      <head>
-        {/* Basic Meta Tags */}
-        <meta charSet="utf-8" />
-        <title>Waddle - Crypto Trading App</title>
-        <meta name="description" content="Crypto trading and portfolio management app" />
-        
-        {/* PWA Meta Tags */}
-        <meta name="application-name" content="Waddle" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="Waddle" />
-        <meta name="format-detection" content="telephone=no" />
-        <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="msapplication-TileColor" content="#3b82f6" />
-        <meta name="msapplication-tap-highlight" content="no" />
-        <meta name="theme-color" content="#3b82f6" />
+    <Providers>
+      <html lang="en" className={`${aeonik.variable}`}>
+        <head>
+          {/* Basic Meta Tags */}
+          <meta charSet="utf-8" />
+          <title>Waddle - Crypto Trading App</title>
+          <meta
+            name="description"
+            content="Crypto trading and portfolio management app"
+          />
 
-        {/* Viewport - Critical for PWA */}
-        <meta 
-          name="viewport" 
-          content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover" 
-        />
+          {/* PWA Meta Tags */}
+          <meta name="application-name" content="Waddle" />
+          <meta name="apple-mobile-web-app-capable" content="yes" />
+          <meta
+            name="apple-mobile-web-app-status-bar-style"
+            content="black-translucent"
+          />
+          <meta name="apple-mobile-web-app-title" content="Waddle" />
+          <meta name="format-detection" content="telephone=no" />
+          <meta name="mobile-web-app-capable" content="yes" />
+          <meta name="msapplication-TileColor" content="#3b82f6" />
+          <meta name="msapplication-tap-highlight" content="no" />
+          <meta name="theme-color" content="#3b82f6" />
 
-        {/* Apple Touch Icons */}
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <link rel="apple-touch-icon" sizes="152x152" href="/apple-touch-icon.png" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-        <link rel="apple-touch-icon" sizes="167x167" href="/apple-touch-icon.png" />
+          {/* Viewport - Critical for PWA */}
+          <meta
+            name="viewport"
+            content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
+          />
 
-        {/* Manifest */}
-        <link rel="manifest" href="/manifest.json" />
-        
-        {/* Favicons */}
-        <link rel="icon" type="image/svg+xml" href="/logos/logo.svg" />
-        <link rel="shortcut icon" href="/favicon.ico" />
-        
-        {/* PWA Styles */}
-        <style dangerouslySetInnerHTML={{
-          __html: `
+          {/* Apple Touch Icons */}
+          <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+          <link
+            rel="apple-touch-icon"
+            sizes="152x152"
+            href="/apple-touch-icon.png"
+          />
+          <link
+            rel="apple-touch-icon"
+            sizes="180x180"
+            href="/apple-touch-icon.png"
+          />
+          <link
+            rel="apple-touch-icon"
+            sizes="167x167"
+            href="/apple-touch-icon.png"
+          />
+
+          {/* Manifest */}
+          <link rel="manifest" href="/manifest.json" />
+
+          {/* Favicons */}
+          <link rel="icon" type="image/svg+xml" href="/logos/logo.svg" />
+          <link rel="shortcut icon" href="/favicon.ico" />
+
+          {/* PWA Styles */}
+          <style
+            dangerouslySetInnerHTML={{
+              __html: `
             /* PWA-specific styles */
             body {
               overscroll-behavior-y: none;
@@ -93,17 +114,19 @@ export default function RootLayout({
                 padding-right: env(safe-area-inset-right);
               }
             }
-          `
-        }} />
-      </head>
-      <body className="min-h-screen bg-background antialiased font-aeonik">
-        <ToastProvider>
-          <div className="relative flex min-h-screen flex-col">
-            <main className="flex-1">{children}</main>
-            {!hideBottomNav && <BottomNavigation isDark={false} />}
-          </div>
-        </ToastProvider>
-      </body>
-    </html>
+          `,
+            }}
+          />
+        </head>
+        <body className="min-h-screen bg-background antialiased font-aeonik">
+          <ToastProvider>
+            <div className="relative flex min-h-screen flex-col">
+              <main className="flex-1">{children}</main>
+              {!hideBottomNav && <BottomNavigation isDark={false} />}
+            </div>
+          </ToastProvider>
+        </body>
+      </html>
+    </Providers>
   );
 }

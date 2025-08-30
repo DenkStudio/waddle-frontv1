@@ -1,68 +1,45 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import Image from "next/image";
+import { usePrivy } from "@privy-io/react-auth";
 
 export default function LoginForm() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const { ready, authenticated, login } = usePrivy();
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
 
-  const mockLogin = async (method: string) => {
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (ready && authenticated) {
+      router.push("/");
+    }
+  }, [ready, authenticated, router]);
+
+  const handlePrivyLogin = async () => {
+    if (!ready) return;
+
     setIsLoading(true);
     setError("");
 
-    // Simulate API call delay
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
-    // Mock validation - allow any email/password or social login
-    if (method === "email" && (!email || !password)) {
-      setError("Please enter both email and password");
+    try {
+      await login();
+    } catch (err) {
+      setError("Failed to sign in. Please try again.");
+      console.error("Login error:", err);
+    } finally {
       setIsLoading(false);
-      return;
     }
-
-    // Simulate successful login
-    localStorage.setItem(
-      "waddle_user",
-      JSON.stringify({
-        id: "user_123",
-        email: email || "user@example.com",
-        name: "John Doe",
-        balance: 1250.5,
-        loginMethod: method,
-      })
-    );
-
-    setIsLoading(false);
-    router.push("/");
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    mockLogin("email");
-  };
-
-  const handleAppleLogin = () => {
-    mockLogin("apple");
-  };
-
-  const handleMetamaskLogin = () => {
-    mockLogin("metamask");
-  };
-
-  const handleGoogleLogin = () => {
-    mockLogin("google");
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
-      <div className="relative h-80  overflow-hidden">
+    <div className="min-h-screen bg-white flex flex-col relative">
+      {/* Video section at top */}
+      <div className="relative h-80 overflow-hidden">
         <video
           autoPlay
           loop
@@ -75,112 +52,44 @@ export default function LoginForm() {
 
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white via-white/90 to-transparent z-10"></div>
 
-        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 z-20  flex items-center justify-center">
+        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 z-20 flex items-center justify-center">
           <Image src="/logos/logo.svg" alt="Logo" width={150} height={150} />
         </div>
       </div>
-      <div className="flex-1 bg-white px-4 py-8">
-        <div className="max-w-md mx-auto">
-          <h1 className="text-2xl font-normal text-gray-900 text-center mb-8">
-            Sign in or create an account
-          </h1>
 
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4 text-sm">
-              {error}
-            </div>
-          )}
+      {/* Main content section */}
+      <div className="flex-1 bg-white flex flex-col items-center justify-center px-8 relative">
+        {/* App name - much closer to logo */}
+        <h1 className="text-4xl font-light text-gray-900 mb-2 -mt-24">
+          waddle
+        </h1>
 
-          <form onSubmit={handleSubmit} className="space-y-4 mb-6">
-            <div>
-              <Input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full border-0 border-b-2 border-gray-300 focus:border-purple-400 focus:ring-0 rounded-none px-0 py-3 bg-transparent"
-                required
-              />
-            </div>
-            <div>
-              <Input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full border-0 border-b-2 border-gray-300 focus:border-purple-400 focus:ring-0 rounded-none px-0 py-3 bg-transparent"
-                required
-              />
-            </div>
-          </form>
+        {/* Subtitle */}
+        <p className="text-lg text-gray-700 mb-16 text-center">
+          Sign in or create an account
+        </p>
 
-          <div className="text-center mb-6">
-            <span className="text-gray-500 text-sm">or</span>
+        {/* Error message */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4 text-sm max-w-sm">
+            {error}
           </div>
+        )}
 
-          <div className="space-y-3 mb-24">
-            <Button
-              onClick={handleAppleLogin}
-              variant="black"
-              disabled={isLoading}
-              leftIcon={
-                <Image
-                  src="/logos/apple.svg"
-                  alt="Apple"
-                  width={20}
-                  height={20}
-                />
-              }
-            >
-              {isLoading ? "Signing in..." : "Continue with Apple"}
-            </Button>
-
-            <Button
-              onClick={handleMetamaskLogin}
-              variant="gray"
-              disabled={isLoading}
-              leftIcon={
-                <Image
-                  src="/logos/metamask.svg"
-                  alt="Metamask"
-                  width={20}
-                  height={20}
-                />
-              }
-            >
-              {isLoading ? "Connecting..." : "Continue with Metamask"}
-            </Button>
-
-            <Button
-              onClick={handleGoogleLogin}
-              variant="gray"
-              disabled={isLoading}
-              leftIcon={
-                <Image
-                  src="/logos/google.svg"
-                  alt="Google"
-                  width={20}
-                  height={20}
-                />
-              }
-            >
-              {isLoading ? "Signing in..." : "Continue with Google"}
-            </Button>
-          </div>
-
+        {/* Start button at bottom */}
+        <div className="absolute bottom-20 left-4 right-4">
           <Button
-            onClick={handleSubmit}
-            variant="blue"
-            className="w-full"
-            disabled={isLoading}
+            onClick={handlePrivyLogin}
+            className="w-full bg-black hover:bg-gray-800 text-white py-4 rounded-full text-lg font-medium"
+            disabled={isLoading || !ready}
           >
             {isLoading ? (
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              <div className="flex items-center justify-center gap-2">
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                 Signing in...
               </div>
             ) : (
-              "Login"
+              "Start"
             )}
           </Button>
         </div>
