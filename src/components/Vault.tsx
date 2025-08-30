@@ -9,46 +9,6 @@ import { Trade } from "@/types";
 import TradeCard from "./ui/TradeCard";
 import { topTrades } from "@/lib/constants";
 
-// Insiders Club Card Component
-const InsidersClubCard = () => {
-  return (
-    <div className="bg-white rounded-2xl shadow-lg p-6 mx-4 mb-6">
-      {/* Profile Picture */}
-      <div className="flex justify-center mb-4">
-        <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center">
-          <div className="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center">
-            <div className="w-8 h-6 bg-gray-300 rounded-full transform rotate-45"></div>
-          </div>
-        </div>
-      </div>
-
-      {/* Name and Handle */}
-      <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Insiders Club</h2>
-        <p className="text-blue-600 text-lg">@cryptowhale.eth</p>
-      </div>
-
-      {/* Stats Labels */}
-      <div className="flex flex-wrap gap-3 justify-center mb-6">
-        <span className="px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
-          TVL $596m
-        </span>
-        <span className="px-4 py-2 bg-gray-900 text-white rounded-full text-sm font-medium">
-          APR +12.5%
-        </span>
-        <span className="px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
-          4mo ago
-        </span>
-      </div>
-
-      {/* Active Trades Section */}
-      <div className="text-center">
-        <p className="text-gray-700 font-medium">Active trades</p>
-      </div>
-    </div>
-  );
-};
-
 export default function Vaults() {
   const [isLoading] = useState(false);
   const router = useRouter();
@@ -99,7 +59,7 @@ export default function Vaults() {
             TVL $596m
           </span>
           <span className="px-4 py-2 bg-gray-900 text-white rounded-full text-sm font-medium">
-            APR +12.5%
+            APR <span className="text-green-500">+12.5%</span>
           </span>
           <span className="px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
             4mo ago

@@ -1,26 +1,39 @@
-import * as React from "react"
-const ShortsIcon = ({isActive, isDark}: {isActive: boolean, isDark: boolean}) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={35}
-    height={30}
-    fill="none"
-  >
-    <path
-      fill={isActive ? "#000" : isDark ? "#fff" : "#000"}
-      fillOpacity={isActive ? 1 : isDark ? 0.3 : 0.3}
-      d="M27 5.045h5.5a2 2 0 0 1 2 2v15.5a2 2 0 0 1-2 2H27v-19.5ZM0 7.045a2 2 0 0 1 2-2h5.5v19.5H2a2 2 0 0 1-2-2v-15.5Z"
-    />
-    <rect
-      width={15}
-      height={30}
-      x={24.75}
-      y={30}
-      fill={isActive ? "#000" : isDark ? "#fff" : "#000"}
-      fillOpacity={isActive ? 1 : isDark ? 0.6 : 0.6}
-      rx={2}
-      transform="rotate(180 24.75 30)"
-    />
-  </svg>
-)
-export default ShortsIcon
+import * as React from "react";
+const ShortsIcon = ({
+  isActive,
+  isDark,
+}: {
+  isActive: boolean;
+  isDark: boolean;
+}) => {
+  const fillColor = isDark ? "white" : "black";
+  const leftRightOpacity = isActive ? "0.6" : "0.3";
+  const centerOpacity = isActive ? "0.9" : "0.6";
+
+  return (
+    <svg
+      width="27"
+      height="24"
+      viewBox="0 0 27 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M21.1304 4.03594H25.323C26.2492 4.03594 27 4.80345 27 5.75022V17.9217C27 18.8684 26.2492 19.6359 25.323 19.6359H21.1304V4.03594Z"
+        fill={fillColor}
+        fillOpacity={leftRightOpacity}
+      />
+      <path
+        d="M0 5.75022C0 4.80345 0.750827 4.03594 1.67702 4.03594H5.86957V19.6359H1.67702C0.750827 19.6359 0 18.8684 0 17.9217L0 5.75022Z"
+        fill={fillColor}
+        fillOpacity={leftRightOpacity}
+      />
+      <path
+        d="M19.3696 22.2857C19.3696 23.2325 18.6187 24 17.6925 24H9.30745C8.38126 24 7.63043 23.2325 7.63043 22.2857V1.71429C7.63043 0.767513 8.38126 0 9.30745 0H17.6925C18.6187 0 19.3696 0.767512 19.3696 1.71429V22.2857Z"
+        fill={fillColor}
+        fillOpacity={centerOpacity}
+      />
+    </svg>
+  );
+};
+export default ShortsIcon;
