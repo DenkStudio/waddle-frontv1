@@ -89,31 +89,21 @@ export default function VaultCard({
                 <p className="text-blue-600 text-sm">{username}</p>
               </div>
             </div>
-
-            <svg
-              className="w-5 h-5 text-gray-500"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-              viewBox="0 0 24 24"
-            >
-              <path d="M9 5l7 7-7 7" />
-            </svg>
           </div>
 
           {/* Statistics section */}
           <div className="flex gap-3 mb-4">
-            <div className="flex-1 text-center p-2 rounded-2xl bg-white ">
+            <div className="flex-1 text-center p-1 rounded-2xl bg-white ">
               <div className="text-green-600 font-medium text-lg">
                 {earnings}
               </div>
               <div className="text-gray-500 text-sm">Earnings</div>
             </div>
-            <div className="flex-1 text-center p-2 rounded-2xl bg-white ">
+            <div className="flex-1 text-center p-1 rounded-2xl bg-white ">
               <div className="text-black font-medium text-lg">{invested}</div>
               <div className="text-gray-500 text-sm">Invested</div>
             </div>
-            <div className="flex-1 text-center p-2 rounded-2xl bg-white ">
+            <div className="flex-1 text-center p-1 rounded-2xl bg-white ">
               <div className="text-black font-medium text-lg">{since}</div>
               <div className="text-gray-500 text-sm">Since</div>
             </div>
@@ -134,15 +124,7 @@ export default function VaultCard({
               className="h-12 w-12 rounded-full bg-black text-white flex items-center justify-center hover:bg-gray-800 transition"
               onClick={handleChat}
             >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-                viewBox="0 0 24 24"
-              >
-                <path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-              </svg>
+              <Image src="/logos/chat.svg" alt="Share" width={20} height={20} />
             </button>
           </div>
         </div>
