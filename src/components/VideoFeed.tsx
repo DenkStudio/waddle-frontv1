@@ -7,6 +7,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import Image from "next/image";
 
 // ──────────────────────────────────────────────────────────────────────────────
 // Tipos
@@ -177,7 +178,7 @@ export default function TikTokFeed({
     container.addEventListener("wheel", onWheel, { passive: true });
     window.addEventListener("keydown", onKey);
     return () => {
-      container.removeEventListener("wheel", onWheel as any);
+      container.removeEventListener("wheel", onWheel);
       window.removeEventListener("keydown", onKey);
       if (wheelTimeout) clearTimeout(wheelTimeout);
     };
@@ -218,9 +219,9 @@ export default function TikTokFeed({
     container.addEventListener("touchend", onTouchEnd);
 
     return () => {
-      container.removeEventListener("touchstart", onTouchStart as any);
-      container.removeEventListener("touchmove", onTouchMove as any);
-      container.removeEventListener("touchend", onTouchEnd as any);
+      container.removeEventListener("touchstart", onTouchStart);
+      container.removeEventListener("touchmove", onTouchMove);
+      container.removeEventListener("touchend", onTouchEnd);
     };
   }, [currentIndex, scrollToIndex]);
 
@@ -252,85 +253,132 @@ export default function TikTokFeed({
 
   // ────────────────────────────────────────────────────────────────────────────
   // UI
-  // ────────────────────────────────────────────────────────────────────────────
+  // ──────────────────────────────────────────────────────────────────────────────
   return (
-    <div
-      ref={containerRef}
-      className="relative h-screen w-full overflow-y-scroll snap-y snap-mandatory scroll-smooth bg-black [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-      aria-label="TikTok-like video feed"
-    >
-      {videos.map((v, i) => (
-        <section
-          key={v.id}
-          className="relative h-screen w-full snap-start"
-          aria-roledescription="slide"
-          aria-label={`Video ${i + 1} de ${videos.length}`}
-        >
-          <video
-            ref={(el) => (videoRefs.current[i] = el)}
-            data-index={i}
-            className="h-full w-full object-cover"
-            src={v.src}
-            poster={v.poster}
-            playsInline
-            muted
-            loop
-            preload="metadata"
-            // iOS requiere interacción en algunos casos si no está muted
-            onClick={togglePlay}
-          />
-
-          {/* Gradiente para legibilidad del caption */}
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/70 to-transparent" />
-
-          {/* HUD / Controles */}
-          <div className="absolute inset-0 flex items-end justify-between p-4 sm:p-6">
-            {/* Texto izquierda */}
-            <div className="max-w-[75%] text-white select-none">
-              {v.author && (
-                <p className="mb-1 text-sm/5 opacity-90">@{v.author}</p>
-              )}
-              {v.caption && (
-                <p className="text-base/6 font-medium drop-shadow-[0_1px_1px_rgba(0,0,0,0.6)]">
-                  {v.caption}
-                </p>
-              )}
-            </div>
-
-            {/* Botonera derecha */}
-            <div className="flex flex-col items-center gap-3 text-white">
-              <IconButton label="Mute/Unmute" onClick={toggleMute}>
-                {isMuted ? (
-                  <SpeakerOffIcon className="h-7 w-7" />
-                ) : (
-                  <SpeakerOnIcon className="h-7 w-7" />
-                )}
-              </IconButton>
-
-              <IconButton label="Play/Pause" onClick={togglePlay}>
-                {isUserPaused ? (
-                  <PlayIcon className="h-7 w-7" />
-                ) : (
-                  <PauseIcon className="h-7 w-7" />
-                )}
-              </IconButton>
-
-              <IconButton label="Anterior" onClick={goPrev}>
-                <UpIcon className="h-7 w-7" />
-              </IconButton>
-              <IconButton label="Siguiente" onClick={goNext}>
-                <DownIcon className="h-7 w-7" />
-              </IconButton>
-
-              {typeof v.likes === "number" && (
-                <div className="mt-2 text-center text-xs opacity-90">
-                  <p className="font-semibold">❤ {formatNumber(v.likes)}</p>
-                </div>
-              )}
+    <div className="relative h-screen w-full bg-black">
+      {/* Fixed Header */}
+      <header className="fixed top-0 left-0 right-0 z-50">
+        <div className="flex items-center justify-between px-4 py-3">
+          {/* Left side - Logo/Brand */}
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+              <Image
+                src="/images/profile.png"
+                alt="Waddle"
+                width={32}
+                height={32}
+              />
             </div>
           </div>
-        </section>
-      ))}
+          <Image
+            src="/logos/logo-white.svg"
+            alt="Waddle"
+            width={32}
+            height={32}
+          />
+
+          {/* Right side - Notifications & Profile */}
+          <div className="flex items-center space-x-3">
+            <button className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+              <svg
+                className="w-4 h-4 text-white/60"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Video Feed Container - Adjusted for header height */}
+      <div
+        ref={containerRef}
+        className="relative h-screen w-full overflow-y-scroll snap-y snap-mandatory scroll-smooth bg-black [scrollbar-width:none] [&::-webkit-scrollbar]:hidden pt-16"
+        aria-label="TikTok-like video feed"
+      >
+        {videos.map((v, i) => (
+          <section
+            key={v.id}
+            className="relative h-screen w-full snap-start"
+            aria-roledescription="slide"
+            aria-label={`Video ${i + 1} de ${videos.length}`}
+          >
+            <video
+              ref={(el) => {
+                videoRefs.current[i] = el;
+              }}
+              data-index={i}
+              className="h-full w-full object-cover"
+              src={v.src}
+              poster={v.poster}
+              playsInline
+              muted
+              loop
+              preload="metadata"
+              // iOS requiere interacción en algunos casos si no está muted
+              onClick={togglePlay}
+            />
+
+            {/* Gradiente para legibilidad del caption */}
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/70 to-transparent" />
+
+            {/* HUD / Controles */}
+            <div className="absolute inset-0 flex items-end justify-between p-4 sm:p-6">
+              {/* Texto izquierda */}
+              <div className="max-w-[75%] text-white select-none">
+                {v.author && (
+                  <p className="mb-1 text-sm/5 opacity-90">@{v.author}</p>
+                )}
+                {v.caption && (
+                  <p className="text-base/6 font-medium drop-shadow-[0_1px_1px_rgba(0,0,0,0.6)]">
+                    {v.caption}
+                  </p>
+                )}
+              </div>
+
+              {/* Botonera derecha */}
+              <div className="flex flex-col items-center gap-3 text-white">
+                <IconButton label="Mute/Unmute" onClick={toggleMute}>
+                  {isMuted ? (
+                    <SpeakerOffIcon className="h-7 w-7" />
+                  ) : (
+                    <SpeakerOnIcon className="h-7 w-7" />
+                  )}
+                </IconButton>
+
+                <IconButton label="Play/Pause" onClick={togglePlay}>
+                  {isUserPaused ? (
+                    <PlayIcon className="h-7 w-7" />
+                  ) : (
+                    <PauseIcon className="h-7 w-7" />
+                  )}
+                </IconButton>
+
+                <IconButton label="Anterior" onClick={goPrev}>
+                  <UpIcon className="h-7 w-7" />
+                </IconButton>
+                <IconButton label="Siguiente" onClick={goNext}>
+                  <DownIcon className="h-7 w-7" />
+                </IconButton>
+
+                {typeof v.likes === "number" && (
+                  <div className="mt-2 text-center text-xs opacity-90">
+                    <p className="font-semibold">❤ {formatNumber(v.likes)}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </section>
+        ))}
+      </div>
     </div>
   );
 }
