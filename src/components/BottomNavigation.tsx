@@ -58,15 +58,19 @@ export function BottomNavigation({ isDark = false }: BottomNavigationProps) {
         style={{
           backdropFilter: 'blur(12px)',
           WebkitBackdropFilter: 'blur(12px)',
-          maskImage: 'linear-gradient(to bottom, transparent 0%, black 50%, black 100%)',
-          WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 50%, black 100%)'
+          maskImage: isDark 
+            ? 'linear-gradient(to bottom, transparent 0%, white 50%, white 100%)'
+            : 'linear-gradient(to bottom, transparent 0%, black 50%, black 100%)',
+          WebkitMaskImage: isDark 
+            ? 'linear-gradient(to bottom, transparent 0%, white 50%, white 100%)'
+            : 'linear-gradient(to bottom, transparent 0%, black 50%, black 100%)'
         }}
       />
       <div
         className={cn(
           "relative z-10",
           isDark
-            ? "bg-gray-900/95 border-gray-700"
+            ? "bg-gray-900/95 border-gray-700 w-fit mx-auto rounded-full"
             : "bg-gray-50 border-gray-200 w-fit mx-auto rounded-full"
         )}
       >
@@ -81,7 +85,7 @@ export function BottomNavigation({ isDark = false }: BottomNavigationProps) {
                   "w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200",
                   "cursor-pointer select-none active:scale-90 active:duration-75",
                   "outline-none border-none",
-                  isDark ? "bg-gray-800" : "bg-gray-100"
+                  isDark ? "bg-gray-800/80 backdrop-blur-sm" : "bg-gray-100"
                 )}
                 style={{
                   WebkitTapHighlightColor: "transparent",
