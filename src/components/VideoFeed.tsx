@@ -3,6 +3,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Button } from "./ui/button";
+import InsidersClubCard from "./InsidersClubCard";
 
 // ──────────────────────────────────────────────────────────────────────────────
 // Tipos
@@ -271,79 +272,7 @@ export default function TikTokFeed({
             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
 
             <div className="absolute left-2 right-2 bottom-32">
-              <div className="relative rounded-[40px] border border-white/20 bg-black/50 backdrop-blur-xl shadow-[0_20px_60px_rgba(0,0,0,.8)] overflow-hidden">
-                <div className="pointer-events-none absolute inset-0 rounded-[40px] bg-[linear-gradient(180deg,rgba(255,255,255,.10)_0%,rgba(255,255,255,.04)_35%,rgba(0,0,0,.40)_100%)]" />
-                <div className="pointer-events-none absolute inset-0 rounded-[40px] ring-1 ring-inset ring-white/5" />
-                <div className="pointer-events-none absolute inset-0 rounded-[40px] bg-[radial-gradient(120%_140%_at_50%_120%,transparent,rgba(0,0,0,.35))]" />
-
-                <div className="relative p-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-full bg-white flex items-center justify-center">
-                        <svg
-                          className="h-6 w-6 text-black"
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                        >
-                          <path d="M12 2C7.03 2 3 6.03 3 11s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 3.5c1.65 0 3 1.35 3 3 0 2.25-3 5-3 5s-3-2.75-3-5c0-1.65 1.35-3 3-3z" />
-                        </svg>
-                      </div>
-                      <div>
-                        <h3 className="text-white font-semibold text-xl leading-6">
-                          Insiders Club
-                        </h3>
-                        <p className="text-white/70 text-[15px] leading-5">
-                          @cryptowhale
-                        </p>
-                      </div>
-                    </div>
-
-                    <svg
-                      className="w-5 h-5 text-white"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M7 4h10a2 2 0 012 2v13l-7-3-7 3V6a2 2 0 012-2z" />
-                    </svg>
-                  </div>
-
-                  <div className="flex flex-wrap gap-1 mb-5">
-                    <span className="px-4 py-2 rounded-full bg-white/10 text-white/90 text-sm border border-white/15 shadow-inner backdrop-blur-sm">
-                      Liquidity <span className="font-semibold">+$52m</span>
-                    </span>
-                    <span className="px-4 py-2 rounded-full bg-white/10 text-white/90 text-sm border border-white/15 shadow-inner backdrop-blur-sm">
-                      Yield{" "}
-                      <span className="text-green-400 font-semibold">
-                        +12.5%
-                      </span>
-                    </span>
-                    <span className="px-4 py-2 rounded-full bg-white/10 text-white/90 text-sm border border-white/15 shadow-inner backdrop-blur-sm">
-                      91 days ago
-                    </span>
-                  </div>
-
-                  <div className="flex items-center">
-                    <div className="relative flex-1 mr-3">
-                      <span className="pointer-events-none absolute -inset-x-6 -inset-y-2 rounded-[28px] bg-[radial-gradient(60%_120%_at_50%_100%,rgba(59,130,246,.55),transparent)] blur-2xl opacity-80" />
-                      <Button variant="gradient-blue">View vault</Button>
-                    </div>
-
-                    <button
-                      aria-label="Share"
-                      className="h-12 w-12 rounded-full bg-white/5 border border-white/15 backdrop-blur-sm flex items-center justify-center hover:bg-white/10 transition"
-                    >
-                      <Image
-                        src="/logos/redirect.svg"
-                        alt="Share"
-                        width={20}
-                        height={20}
-                      />
-                    </button>
-                  </div>
-                </div>
-              </div>
+              <InsidersClubCard />
             </div>
           </section>
         ))}

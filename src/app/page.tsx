@@ -3,66 +3,17 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Header } from "@/components/Header";
 import { ProfileAvatar } from "@/components/icons/ProfileAvatar";
 import { SearchIcon } from "@/components/icons/SearchIcon";
-import { TradeCard } from "@/components/TradeCard";
-
-interface CryptoToken {
-  symbol: string;
-  name: string;
-  price: string;
-  change?: string;
-  icon: string;
-}
-
-interface Trade {
-  id: string;
-  username: string;
-  avatar: string;
-  token: string;
-  type: "LONG" | "SHORT";
-  leverage: string;
-  profit: string;
-  timeAgo: string;
-}
+import { Trade } from "@/types";
+import { trendingVaults } from "@/lib/constants";
+import Image from "next/image";
+import InsidersClubCard from "@/components/InsidersClubCard";
 
 export default function Home() {
   const [isLoading] = useState(false);
   const router = useRouter();
-
-  // Mock data for trending tokens
-  const trendingTokens: CryptoToken[] = [
-    {
-      symbol: "DOGE",
-      name: "Dogecoin",
-      price: "$2.56B",
-      icon: "🐕",
-      change: "+5.2%",
-    },
-    {
-      symbol: "SHIB",
-      name: "Shiba Inu",
-      price: "$7.4B",
-      icon: "🐺",
-      change: "+2.1%",
-    },
-    {
-      symbol: "PEPE",
-      name: "Pepe",
-      price: "$4.26B",
-      icon: "🐸",
-      change: "+8.5%",
-    },
-    {
-      symbol: "PENGU",
-      name: "Pudgy Penguins",
-      price: "$1.96B",
-      icon: "🐧",
-      change: "-1.2%",
-    },
-  ];
 
   // Mock data for top trades
   const topTrades: Trade[] = [
@@ -151,29 +102,38 @@ export default function Home() {
 
         {/* Trending Section */}
         <div className="space-y-5">
-          <h2 className="text-xl font-semibold text-gray-900">Trending</h2>
+          <h2 className="text-xl font-semibold text-gray-900">
+            Trending vaults
+          </h2>
           <div className="flex space-x-6 overflow-x-auto pb-2 scrollbar-hide">
-            {trendingTokens.map((token) => (
-              <div
-                key={token.symbol}
-                className="flex-shrink-0 w-20 text-center"
-              >
-                <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-2xl mb-2 mx-auto">
-                  {token.icon}
+            {trendingVaults.map((vault) => (
+              <div key={vault.name} className="flex-shrink-0 w-20 text-center">
+                <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-2xl mb-2 mx-auto ">
+                  <Image
+                    width={64}
+                    height={64}
+                    src={vault.src}
+                    alt={vault.name}
+                    className="w-full h-full object-cover rounded-full"
+                  />
                 </div>
                 <p className="text-sm font-medium text-gray-900">
-                  {token.symbol}
+                  {vault.name}
                 </p>
-                <p className="text-xs text-gray-500 mt-1">{token.price}</p>
+                <p className="text-xs text-gray-500 mt-1 bg-gray-100 rounded-full px-2 py-1">
+                  APR <span className="text-green-500">{vault.apr}</span>
+                </p>
               </div>
             ))}
           </div>
         </div>
 
+        <div className="w-full h-px bg-gray-200"></div>
+
         {/* Top Trades Section */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-gray-900">Top trades</h2>
+            <h2 className="text-xl font-semibold text-gray-900">Holdings</h2>
             <Button
               size="sm"
               className="text-blue-500 border border-blue-500 bg-transparent hover:bg-blue-50"
@@ -183,59 +143,16 @@ export default function Home() {
           </div>
 
           {topTrades.map((trade) => (
-            <Card key={trade.id} className="border-0 shadow-sm bg-gray-50">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center space-x-3">
-                    <div className="text-2xl">{trade.avatar}</div>
-                    <div>
-                      <p className="font-medium text-gray-900">
-                        {trade.username}
-                      </p>
-                      <p className="text-sm text-gray-500">{trade.timeAgo}</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-lg font-semibold text-green-500">
-                      {trade.profit}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <span className="text-sm font-medium text-gray-900">
-                      {trade.token}
-                    </span>
-                    <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">
-                      ↗ {trade.type}
-                    </span>
-                    <span className="text-sm text-gray-600">
-                      {trade.leverage}
-                    </span>
-                  </div>
-                  <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-                    <svg
-                      className="w-4 h-4 text-gray-600"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M5 12h14m-7-7l7 7-7 7"
-                      />
-                    </svg>
-                  </div>
-                </div>
-
-                <Button className="w-full mt-4 bg-blue-500 hover:bg-blue-600 text-white rounded-full">
-                  View trade
-                </Button>
-              </CardContent>
-            </Card>
+            <InsidersClubCard
+              variant="light"
+              title="BeInCrypto"
+              username="@beinctrpyo_official"
+              earnings="+$108.9"
+              invested="4203.48"
+              since="3mo ago"
+              onViewVault={() => {}}
+              onShare={() => {}}
+            />
           ))}
         </div>
       </div>
