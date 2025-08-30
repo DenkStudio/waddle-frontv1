@@ -48,8 +48,8 @@ export default function ChatPage() {
     },
     {
       id: "3",
-      username: "@cryptowhale.eth",
-      handle: "@cryptowhale.eth",
+      username: "cryptowhale.eth",
+      handle: "cryptowhale.eth",
       message:
         "We're looking at partial exits around $3,450 - $3,500. Will update if that changes.",
       timeAgo: "2 days ago",
@@ -80,7 +80,7 @@ export default function ChatPage() {
     <div className="flex flex-col h-screen bg-white">
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 bg-white border-b border-gray-200">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 w-full">
           <button
             onClick={() => router.back()}
             className="p-2 hover:bg-gray-100 rounded-full transition-colors"
@@ -95,9 +95,9 @@ export default function ChatPage() {
               <path d="M15 18l-6-6 6-6" />
             </svg>
           </button>
-          <div className="text-center">
+          <div className="text-center flex flex-col w-full items-center justify-center">
             <div className="text-sm text-gray-500">Chat</div>
-            <div className="text-lg font-semibold text-gray-900">
+            <div className="text-lg font-normal text-gray-900">
               Insiders Club
             </div>
           </div>
@@ -105,34 +105,34 @@ export default function ChatPage() {
         <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
           <svg
             className="w-6 h-6 text-gray-600"
-            fill="none"
+            fill="black"
             stroke="currentColor"
             strokeWidth={2}
             viewBox="0 0 24 24"
           >
-            <path d="M12 5v.01M12 12v.01M12 19v.01" />
+            <path fill="black" d="M12 5v.01M12 12v.01M12 19v.01" />
           </svg>
         </button>
       </div>
 
       {/* Tab Navigation */}
-      <div className="flex bg-white px-4 py-3 gap-2">
+      <div className="flex bg-gray-200 rounded-full p-1 mx-4 my-3">
         <button
           onClick={() => setActiveTab("Chat")}
-          className={`px-4 py-2 rounded-full font-medium transition-colors ${
+          className={`flex-1 px-4 py-1 rounded-full font-medium transition-all duration-200 ${
             activeTab === "Chat"
-              ? "bg-gray-900 text-white"
-              : "text-gray-500 hover:text-gray-700"
+              ? "bg-white text-black shadow-sm"
+              : "text-black"
           }`}
         >
           Chat
         </button>
         <button
           onClick={() => setActiveTab("Members")}
-          className={`px-4 py-2 rounded-full font-medium transition-colors ${
+          className={`flex-1 px-4 py-1 rounded-full font-medium transition-all duration-200 ${
             activeTab === "Members"
-              ? "bg-gray-900 text-white"
-              : "text-gray-500 hover:text-gray-700"
+              ? "bg-white text-black shadow-sm"
+              : "text-black"
           }`}
         >
           Members
@@ -146,13 +146,23 @@ export default function ChatPage() {
             {/* Date separator for "Today" */}
             {index === 3 && (
               <div className="flex items-center justify-center my-8">
-                <div className="text-sm text-gray-500 font-medium">Today</div>
+                <div className="flex items-center gap-4">
+                  <div className="w-32 h-px bg-gray-300"></div>
+                  <div className="text-sm text-gray-500 font-normal">Today</div>
+                  <div className="w-32 h-px bg-gray-300"></div>
+                </div>
               </div>
             )}
 
             <div className="flex gap-3">
               <div className="relative">
-                <div className="w-10 h-10 rounded-full bg-gray-300 flex-shrink-0 overflow-hidden">
+                <div
+                  className={`w-10 h-10 ${
+                    index === 2 ? "rounded-full" : "r0"
+                  } ${
+                    index === 3 ? "bg-gray-300" : "bg-gray-300"
+                  } flex-shrink-0 overflow-hidden`}
+                >
                   <Image
                     src={message.avatar}
                     alt={message.username}
@@ -188,7 +198,7 @@ export default function ChatPage() {
                     {message.timeAgo}
                   </span>
                 </div>
-                <div className="mt-1">
+                <div className="mt-1 bg-gray-200 rounded-lg p-3">
                   <p className="text-gray-900 text-sm leading-relaxed">
                     {message.message}
                   </p>

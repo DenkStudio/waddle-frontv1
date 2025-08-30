@@ -25,7 +25,7 @@ export interface VaultCardProps {
 
 export default function VaultCard({
   title = "Insiders Club",
-  username = "@cryptowhale",
+  username = "cryptowhale",
   liquidity = "+$52m",
   yield: yieldValue = "+12.5%",
   timeAgo = "91 days ago",

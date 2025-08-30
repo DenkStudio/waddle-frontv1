@@ -80,7 +80,7 @@ export const trendingVaults: CryptoToken[] = [
 export const topTrades: Trade[] = [
   {
     id: "1",
-    username: "@cryptowhale",
+    username: "cryptowhale",
     img: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1200px-Bitcoin.svg.png",
     token: "$SOL",
     type: "LONG",
@@ -90,7 +90,7 @@ export const topTrades: Trade[] = [
   },
   {
     id: "2",
-    username: "@cryptowhale",
+    username: "cryptowhale",
     img: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1200px-Bitcoin.svg.png",
     token: "$ETH",
     type: "SHORT",
@@ -100,7 +100,7 @@ export const topTrades: Trade[] = [
   },
   {
     id: "3",
-    username: "@cryptowhale",
+    username: "cryptowhale",
     img: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1200px-Bitcoin.svg.png",
     token: "$BTC",
     type: "LONG",
@@ -110,7 +110,7 @@ export const topTrades: Trade[] = [
   },
   {
     id: "4",
-    username: "@cryptowhale",
+    username: "cryptowhale",
     img: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1200px-Bitcoin.svg.png",
     token: "$LSK",
     type: "LONG",
