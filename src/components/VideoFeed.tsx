@@ -1,8 +1,6 @@
 "use client";
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import Image from "next/image";
-import { Button } from "./ui/button";
 import VaultCard from "./ui/VaultCard";
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -265,7 +263,7 @@ export default function TikTokFeed({
                 videoRefs.current[i] = el;
               }}
               data-index={i}
-              className="h-full w-full object-cover"
+              className="h-full w-full"
               src={v.src}
               poster={v.poster}
               playsInline
@@ -277,7 +275,7 @@ export default function TikTokFeed({
 
             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
 
-            <div className="absolute left-2 right-2 bottom-32">
+            <div className="absolute left-2 right-2 bottom-42">
               <VaultCard />
             </div>
           </section>

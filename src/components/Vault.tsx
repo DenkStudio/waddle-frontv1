@@ -276,7 +276,7 @@ export default function Vaults({ vaultAddress }: VaultsProps) {
       />
 
       <div className="flex-1 overflow-y-auto">
-        <div className="bg-white rounded-2xl mb-6">
+        <div className="bg-white rounded-2xl mb-3">
           {/* Profile Picture */}
           <div className="flex justify-center mb-4">
             <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center">
@@ -287,7 +287,7 @@ export default function Vaults({ vaultAddress }: VaultsProps) {
           </div>
 
           {/* Name and Handle */}
-          <div className="text-center mb-6">
+          <div className="text-center mb-3">
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
               {vaultDetails.data?.name || "Loading..."}
             </h2>
@@ -463,7 +463,7 @@ export default function Vaults({ vaultAddress }: VaultsProps) {
 
         {/* Real Position Cards */}
         {vaultPositions.data && vaultPositions.data.length > 0 && (
-          <div className="space-y-4">
+          <div className="space-y-4 -mx-4 px-4">
             {vaultPositions.data.map((position, index) => {
               const szi = parseFloat(position.position.szi);
               const entryPx = parseFloat(position.position.entryPx || "0");
@@ -509,14 +509,11 @@ export default function Vaults({ vaultAddress }: VaultsProps) {
             Invest
           </button>
 
-          {/* Circular Black Chat Icon with Notification Badge */}
           <div className="relative">
             <button className="w-16 h-16 bg-black rounded-full flex items-center justify-center shadow-lg hover:bg-gray-800 transition-colors">
-              {/* Chat Icon */}
               <Image src="/logos/chat.svg" alt="chat" width={24} height={24} />
             </button>
 
-            {/* Notification Badge */}
             <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
               <span className="text-white text-xs font-bold">10</span>
             </div>

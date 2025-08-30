@@ -1,5 +1,7 @@
 import React from "react";
 import { cn } from "@/lib/utils";
+import { TokenLogo } from "./TokenLogo";
+import Image from "next/image";
 
 interface TradeCardProps {
   username: string;
@@ -32,63 +34,58 @@ export function TradeCard({
   return (
     <div
       className={cn(
-        "border-0 shadow-sm bg-gray-100 rounded-2xl p-4",
+        "w-full border-0 shadow-sm bg-gray-100 rounded-[40px] py-4 px-6",
         className
       )}
     >
       {/* Header Row */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-2">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center">
-            <span className="text-white text-lg">⬥</span>
-          </div>
+          <TokenLogo symbol={token} size="lg" />
           <div>
-            <p className="font-semibold text-gray-900 text-lg">${token}</p>
+            <p className="font-bold text-gray-900 text-xl">${token}</p>
             <p className="text-sm text-gray-500">{timeAgo}</p>
           </div>
         </div>
-        <div className="flex items-center space-x-2">
-          <span className="text-gray-900 font-medium">{type}</span>
-          <span className="text-gray-900">↗</span>
-          <div className="text-right">
-            <p className="text-sm text-gray-600">{leverage}</p>
+        <div className="text-right">
+          <div className="flex items-center space-x-1">
+            <span className="text-gray-900 font-bold text-xl">{type}</span>
+            <Image
+              src="/logos/arrow.svg"
+              alt="arrow-up"
+              width={16}
+              height={16}
+              className={cn(
+                "transition-transform duration-200",
+                type === "SHORT" ? "rotate-180" : ""
+              )}
+            />
           </div>
+          <p className="text-sm text-gray-600">{leverage}</p>
         </div>
       </div>
 
       {/* Stats Row */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="text-left">
-          <p className="text-lg font-semibold text-gray-900">
-            {entryPrice || "0.369"}
+      <div className="flex items-center justify-between space-x-2 w-full">
+        <div className="bg-gray-200 rounded-xl px-3 py-2 flex-1 ">
+          <p className="text-md font-normal text-gray-900 text-center">
+            {entryPrice}
           </p>
-          <p className="text-sm text-gray-500">Entry price</p>
+          <p className="text-sm text-gray-500 text-center ">Entry price</p>
         </div>
-        <div className="text-center">
-          <p className="text-lg font-semibold text-gray-900">
-            {markPrice || "0.372"}
+        <div className="bg-gray-200 rounded-xl px-3 py-2 flex-1 ">
+          <p className="text-md font-normal text-gray-900 text-center">
+            {markPrice}
           </p>
-          <p className="text-sm text-gray-500">Mark price</p>
+          <p className="text-sm text-gray-500 text-center ">Mark price</p>
         </div>
-        <div className="text-right">
-          <p className={cn("text-lg font-semibold", profitColor)}>{profit}</p>
-          <p className="text-sm text-gray-500">Earn</p>
+        <div className="bg-gray-200 rounded-xl px-3 py-2 flex-1 ">
+          <p className={cn("text-md font-normal text-center", profitColor)}>
+            {profit}
+          </p>
+          <p className="text-sm text-gray-500 text-center ">Earn</p>
         </div>
-        <div className="ml-2">
-          <svg
-            className="w-5 h-5 text-gray-400"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 5l7 7-7 7"
-            />
-          </svg>
-        </div>
+        <div className="ml-3 flex items-center"></div>
       </div>
     </div>
   );
