@@ -8,10 +8,12 @@ import { SearchIcon } from "@/components/icons/SearchIcon";
 import { Trade } from "@/types";
 import TradeCard from "./ui/TradeCard";
 import { topTrades } from "@/lib/constants";
+import { SettingsMenu } from "@/components/SettingsMenu";
 import Image from "next/image";
 
 export default function Vaults() {
   const [isLoading] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const router = useRouter();
 
   // Mock data for top trades
@@ -28,7 +30,9 @@ export default function Vaults() {
     <div className="h-full bg-white overflow-hidden flex flex-col px-4">
       {/* Header */}
       <Header
-        leftComponent={<ProfileAvatar size={56} />}
+        leftComponent={
+          <ProfileAvatar size={56} onClick={() => setIsSettingsOpen(true)} />
+        }
         centerComponent={
           <h1 className="text-xl font-semibold text-gray-900">view vault</h1>
         }
@@ -104,6 +108,12 @@ export default function Vaults() {
           </div>
         </div>
       </div>
+
+      {/* Settings Menu */}
+      <SettingsMenu
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+      />
     </div>
   );
 }

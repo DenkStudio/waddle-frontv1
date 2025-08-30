@@ -25,10 +25,10 @@ export function SettingsMenu({ isOpen, onClose }: SettingsMenuProps) {
   return (
     <>
       {/* Backdrop */}
-      <div className="fixed inset-0 bg-black/50 z-40" onClick={onClose} />
+      <div className="fixed inset-0 bg-black/50 z-[100]" onClick={onClose} />
 
       {/* Menu */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl z-50 animate-slide-up">
+      <div className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl z-[110] animate-slide-up">
         <div className="px-6 py-6">
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
