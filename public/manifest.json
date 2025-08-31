@@ -1,30 +1,30 @@
 {
-  "name": "Waddle Trading App",
-  "short_name": "Waddle",
-  "description": "Crypto trading and portfolio management app",
-  "start_url": "/",
-  "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#3b82f6",
-  "orientation": "portrait",
-  "scope": "/",
-  "icons": [
-    {
-      "src": "/logos/logo.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/logos/logo.svg",
-      "sizes": "512x512",
-      "type": "image/svg+xml"
-    }
-  ],
-  "categories": [
-    "finance",
-    "business"
-  ],
-  "lang": "en",
-  "dir": "ltr"
+  "accountAssociation": {
+    "header": "FARCASTER_HEADER",
+    "payload": "FARCASTER_PAYLOAD",
+    "signature": "FARCASTER_SIGNATURE"
+  },
+  "baseBuilder": {
+    "allowedAddresses": ["0xE026A6CcD5c6dc3C240C43b30d17ab363dE9b3E1"]
+  },
+  "frame": {
+    "version": "1",
+    "name": "Waddle",
+    "subtitle": "Crypto trading & portfolios",
+    "description": "Crypto trading and portfolio management app",
+    "homeUrl": "https://waddle-frontv1-rho.vercel.app/",
+    "iconUrl": "https://waddle-frontv1-rho.vercel.app/assets/icon-1024.png",
+    "splashImageUrl": "https://waddle-frontv1-rho.vercel.app/assets/splash.png",
+    "splashBackgroundColor": "#ffffff",
+    "screenshotUrls": [
+      "https://waddle-frontv1-rho.vercel.app/assets/screen-1.png"
+    ],
+    "primaryCategory": "finance",
+    "tags": ["defi","trading","socialfi"],
+    "heroImageUrl": "https://waddle-frontv1-rho.vercel.app/assets/og.png",
+    "ogTitle": "Waddle",
+    "ogDescription": "Simple, community-driven trading.",
+    "ogImageUrl": "https://waddle-frontv1-rho.vercel.app/assets/og.png",
+    "noindex": false
+  }
 }
