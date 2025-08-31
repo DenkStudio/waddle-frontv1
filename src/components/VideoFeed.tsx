@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import VaultCard from "./ui/VaultCard";
+import VaultCard, { VaultCardProps } from "./ui/VaultCard";
 
 // ──────────────────────────────────────────────────────────────────────────────
 // Tipos
@@ -13,6 +13,7 @@ export type FeedVideo = {
   caption?: string;
   author?: string;
   likes?: number;
+  vault?: VaultCardProps;
 };
 
 export type TikTokFeedProps = {
@@ -276,7 +277,7 @@ export default function TikTokFeed({
             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
 
             <div className="absolute left-2 right-2 bottom-28">
-              <VaultCard />
+              <VaultCard {...v.vault} />
             </div>
           </section>
         ))}
