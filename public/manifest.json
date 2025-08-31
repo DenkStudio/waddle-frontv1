@@ -1,30 +1,29 @@
 {
-  "name": "Waddle Trading App",
-  "short_name": "Waddle",
-  "description": "Crypto trading and portfolio management app",
-  "start_url": "/",
-  "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#3b82f6",
-  "orientation": "portrait",
-  "scope": "/",
-  "icons": [
-    {
-      "src": "/logos/logo.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/logos/logo.svg",
-      "sizes": "512x512",
-      "type": "image/svg+xml"
-    }
-  ],
-  "categories": [
-    "finance",
-    "business"
-  ],
-  "lang": "en",
-  "dir": "ltr"
+  "accountAssociation": {
+    "header": "eyJmaWQiOjEyOTMwLCJ0eXBlIjoiY3VzdG9keSIsImtleSI6IjB4MTc3RDc5ODhBMEVFRGY1Y0JkNTI3MEU2NUYzZURGOEY4MTE2QmNmOCJ9",
+    "payload": "eyJkb21haW4iOiJ3YWRkbGUtZnJvbnR2MS1yaG8udmVyY2VsLmFwcCJ9",
+    "signature": "MHhmMjY3ZDJhMWI1MmI0ZWIzYjVhNTQxZTRkZWViODU2ZjU1NDc0OTE3MGNjNGQyN2NlMzdiNDRmZDVlODNmOGY2NGQ1YjcxYzE0YWM3OGQ4NWU2N2U2YmEzMDQ3MTNlNjc4NWI0NWZkOTYzMTA2Njc2NGM5M2VmOGE3ODA1MGI1YjFj"
+  },
+  "baseBuilder": {
+    "allowedAddresses": ["0xE026A6CcD5c6dc3C240C43b30d17ab363dE9b3E1"]
+  },
+  "frame": {
+    "version": "1",
+    "name": "Waddle",
+    "subtitle": "Social Investing on Hyperliquid",
+    "description": "Crypto trading and portfolio management app",
+    "homeUrl": "https://waddle-frontv1-rho.vercel.app",
+    "iconUrl": "https://waddle-frontv1-rho.vercel.app/icon-1024.png",
+    "splashImageUrl": "https://waddle-frontv1-rho.vercel.app/waddle.png",
+    "splashBackgroundColor": "#ffffff",
+    "primaryCategory": "finance",
+    "tags": ["defi","trading","socialfi"],
+    "heroImageUrl": "https://waddle-frontv1-rho.vercel.app/og.png",
+    "ogTitle": "Waddle",
+    "ogDescription": "Simple, community-driven trading.",
+    "ogImageUrl": "https://waddle-frontv1-rho.vercel.app/og.png",
+    "screenshotUrls": ["https://waddle-frontv1-rho.vercel.app/screen-1.png"],
+    "webhookUrl": "https://waddle-frontv1-rho.vercel.app/api/webhook",
+    "noindex": false
+  }
 }
