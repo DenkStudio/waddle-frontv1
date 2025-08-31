@@ -1,8 +1,8 @@
 {
   "accountAssociation": {
-    "header": "FARCASTER_HEADER",
-    "payload": "FARCASTER_PAYLOAD",
-    "signature": "FARCASTER_SIGNATURE"
+    "header": "eyJmaWQiOjEyOTMwLCJ0eXBlIjoiY3VzdG9keSIsImtleSI6IjB4MTc3RDc5ODhBMEVFRGY1Y0JkNTI3MEU2NUYzZURGOEY4MTE2QmNmOCJ9",
+    "payload": "eyJkb21haW4iOiJ3YWRkbGUtZnJvbnR2MS1yaG8udmVyY2VsLmFwcCJ9",
+    "signature": "MHhmMjY3ZDJhMWI1MmI0ZWIzYjVhNTQxZTRkZWViODU2ZjU1NDc0OTE3MGNjNGQyN2NlMzdiNDRmZDVlODNmOGY2NGQ1YjcxYzE0YWM3OGQ4NWU2N2U2YmEzMDQ3MTNlNjc4NWI0NWZkOTYzMTA2Njc2NGM5M2VmOGE3ODA1MGI1YjFj"
   },
   "baseBuilder": {
     "allowedAddresses": ["0xE026A6CcD5c6dc3C240C43b30d17ab363dE9b3E1"]
@@ -10,21 +10,20 @@
   "frame": {
     "version": "1",
     "name": "Waddle",
-    "subtitle": "Crypto trading & portfolios",
+    "subtitle": "Social Investing on Hyperliquid",
     "description": "Crypto trading and portfolio management app",
-    "homeUrl": "https://waddle-frontv1-rho.vercel.app/",
-    "iconUrl": "https://waddle-frontv1-rho.vercel.app/assets/icon-1024.png",
-    "splashImageUrl": "https://waddle-frontv1-rho.vercel.app/assets/splash.png",
+    "homeUrl": "https://waddle-frontv1-rho.vercel.app",
+    "iconUrl": "https://waddle-frontv1-rho.vercel.app/icon-1024.png",
+    "splashImageUrl": "https://waddle-frontv1-rho.vercel.app/waddle.png",
     "splashBackgroundColor": "#ffffff",
-    "screenshotUrls": [
-      "https://waddle-frontv1-rho.vercel.app/assets/screen-1.png"
-    ],
     "primaryCategory": "finance",
     "tags": ["defi","trading","socialfi"],
-    "heroImageUrl": "https://waddle-frontv1-rho.vercel.app/assets/og.png",
+    "heroImageUrl": "https://waddle-frontv1-rho.vercel.app/og.png",
     "ogTitle": "Waddle",
     "ogDescription": "Simple, community-driven trading.",
-    "ogImageUrl": "https://waddle-frontv1-rho.vercel.app/assets/og.png",
+    "ogImageUrl": "https://waddle-frontv1-rho.vercel.app/og.png",
+    "screenshotUrls": ["https://waddle-frontv1-rho.vercel.app/screen-1.png"],
+    "webhookUrl": "https://waddle-frontv1-rho.vercel.app/api/webhook",
     "noindex": false
   }
 }
